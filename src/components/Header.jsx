@@ -22,7 +22,7 @@ export const Header = ({ currentTab, userRole = 'student', onNavigate, onOpenMod
       <header className="app-header">
         <div className="header-user-info">
           <div className="header-brand-badge">
-            <img src="/noria-logo.png" alt="Noria Logo" onError={(e) => { e.target.style.display='none'; }} />
+            <img src="/nooria-logo.png" alt="Nooria Logo" onError={(e) => { e.target.style.display='none'; }} />
             {/* <span style={{ fontSize: '16px' }}>🏫</span> */}
           </div>
           <div className="header-titles-col">
