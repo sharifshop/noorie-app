@@ -283,7 +283,6 @@ body {
   align-items: center;
   justify-content: space-between;
   box-shadow: var(--shadow-header);
-  flex-shrink: 0;
 }
 
 .app-header.teal-bg {
