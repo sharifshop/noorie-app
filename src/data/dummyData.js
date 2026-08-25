@@ -206,3 +206,86 @@ export const dateSheetData = [
   { subject: "English", date: "21 May 2026", time: "09:00 AM - 12:00 PM", room: "Room 102" },
   { subject: "Hindi", date: "24 May 2026", time: "09:00 AM - 12:00 PM", room: "Room 104" },
 ];
+
+// ----------------------------------------------------
+// TEACHER & ADMIN DATA STRUCTURES
+// ----------------------------------------------------
+
+export const teacherProfile = {
+  name: "Mrs. Sunita Sharma",
+  portal: "Teacher / Faculty Portal",
+  staffId: "TCH2001",
+  school: "NOORIA CHILDREN ACADEMY",
+  designation: "Senior Science & Math Teacher",
+  department: "Science & Mathematics",
+  email: "sunita.sharma@nooria.edu.in",
+  phone: "+91 9876501234",
+  assignedClass: "Class X-A (Class Teacher)",
+  otherClasses: ["Class IX-B", "Class XI-A"],
+  qualification: "M.Sc. Physics, B.Ed.",
+  experience: "8+ Years",
+  joinedYear: "2018"
+};
+
+export const adminProfile = {
+  name: "Dr. Ramesh Chandra",
+  portal: "Administrator & Management Portal",
+  adminId: "ADM3001",
+  school: "NOORIA CHILDREN ACADEMY",
+  designation: "Principal / Director",
+  department: "School Management & Operations",
+  email: "principal@nooria.edu.in",
+  phone: "+91 9800011223",
+  accessLevel: "Super Admin (Full Access)",
+  office: "Administrative Block, Room 101"
+};
+
+export const teacherQuickModules = [
+  { id: "teacher_attendance", name: "Mark Attendance", icon: "CheckSquare", badge: "Class 10-A", bg: "#e0f2fe", iconColor: "#0284c7", modal: "teacher_attendance" },
+  { id: "teacher_homework", name: "Assign Homework", icon: "PlusCircle", badge: null, bg: "#fef3c7", iconColor: "#d97706", modal: "teacher_homework" },
+  { id: "teacher_marks", name: "Enter Exam Marks", icon: "Award", badge: null, bg: "#fae8ff", iconColor: "#c026d3", modal: "teacher_marks" },
+  { id: "teacher_timetable", name: "Class Timetable", icon: "Clock", badge: null, bg: "#f0fdf4", iconColor: "#16a34a", modal: "timetable" },
+  { id: "teacher_notices", name: "Post Class Notice", icon: "Send", badge: null, bg: "#fff1f2", iconColor: "#e11d48", modal: "notice" },
+  { id: "teacher_students", name: "Student Directory", icon: "Users", badge: "32 Students", bg: "#f3e8ff", iconColor: "#9333ea", modal: "teacher_students" }
+];
+
+export const adminQuickModules = [
+  { id: "admin_fees", name: "Fee Management", icon: "CreditCard", badge: "₹7.5L Due", bg: "#ecfdf5", iconColor: "#059669", modal: "admin_fees" },
+  { id: "admin_staff", name: "Staff Directory", icon: "UserCheck", badge: "42 Staff", bg: "#eef2ff", iconColor: "#4f46e5", modal: "admin_staff" },
+  { id: "admin_broadcast", name: "Broadcast Notice", icon: "Megaphone", badge: null, bg: "#fff7ed", iconColor: "#ea580c", modal: "admin_broadcast" },
+  { id: "admin_reports", name: "School Analytics", icon: "PieChart", badge: null, bg: "#f0f9ff", iconColor: "#0284c7", modal: "admin_reports" },
+  { id: "admin_classes", name: "Class & Subjects", icon: "Layers", badge: null, bg: "#fae8ff", iconColor: "#d946ef", modal: "datesheet" },
+  { id: "admin_holidays", name: "Academic Calendar", icon: "Calendar", badge: null, bg: "#fdf4ff", iconColor: "#a21caf", modal: "holiday" }
+];
+
+export const studentsInClass = [
+  { id: "STD1001", roll: 1, name: "Aaditya Patel", status: "Present", parentName: "Sanjay Patel", phone: "+91 9811223344", feeStatus: "Paid", termMark: 88 },
+  { id: "STD1002", roll: 2, name: "Ananya Roy", status: "Present", parentName: "Deepak Roy", phone: "+91 9822334455", feeStatus: "Paid", termMark: 92 },
+  { id: "STD1003", roll: 3, name: "Devansh Gupta", status: "Absent", parentName: "Manoj Gupta", phone: "+91 9833445566", feeStatus: "Pending ₹5,000", termMark: 76 },
+  { id: "STD1004", roll: 4, name: "Ishita Singh", status: "Present", parentName: "Vikram Singh", phone: "+91 9844556677", feeStatus: "Paid", termMark: 95 },
+  { id: "STD1005", roll: 5, name: "Kabir Mehta", status: "Late", parentName: "Amit Mehta", phone: "+91 9855667788", feeStatus: "Paid", termMark: 84 },
+  { id: "STD1006", roll: 12, name: "Aarav Sharma", status: "Present", parentName: "Rakesh Sharma", phone: "+91 9876543210", feeStatus: "Pending ₹10,000", termMark: 92 },
+  { id: "STD1007", roll: 13, name: "Riya Kapoor", status: "Present", parentName: "Sunil Kapoor", phone: "+91 9866778899", feeStatus: "Paid", termMark: 90 },
+  { id: "STD1008", roll: 14, name: "Vihaan Joshi", status: "Absent", parentName: "Anil Joshi", phone: "+91 9877889900", feeStatus: "Pending ₹2,500", termMark: 79 }
+];
+
+export const teachersList = [
+  { id: "TCH2001", name: "Mrs. Sunita Sharma", subject: "Physics & Math", classTeacherOf: "Class 10-A", phone: "+91 9876501234", status: "Active", experience: "8 Yrs" },
+  { id: "TCH2002", name: "Mr. Rajesh Kumar", subject: "English Lit", classTeacherOf: "Class 9-A", phone: "+91 9876505678", status: "Active", experience: "12 Yrs" },
+  { id: "TCH2003", name: "Mrs. Anita Verma", subject: "Biology & Chem", classTeacherOf: "Class 10-B", phone: "+91 9876509012", status: "Active", experience: "6 Yrs" },
+  { id: "TCH2004", name: "Mr. S. K. Singh", subject: "Higher Math", classTeacherOf: "Class 11-A", phone: "+91 9876503456", status: "Active", experience: "15 Yrs" },
+  { id: "TCH2005", name: "Mr. V. P. Sharma", subject: "Social Science", classTeacherOf: "Class 8-A", phone: "+91 9876507890", status: "On Leave", experience: "10 Yrs" },
+];
+
+export const adminStats = {
+  totalStudents: 850,
+  totalTeachers: 42,
+  totalClasses: 24,
+  todayAttendanceRate: "94.2%",
+  totalFeeExpected: "₹40.0 Lakhs",
+  totalFeeCollected: "₹32.5 Lakhs",
+  pendingFeeAmount: "₹7.5 Lakhs",
+  feeCollectionPercentage: 81.25,
+  activeNotices: 5
+};
+

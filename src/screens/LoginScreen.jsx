@@ -1,40 +1,88 @@
 import React, { useState } from 'react';
-import { User, LogIn, Eye, EyeOff, Lock, ChevronLeft, ArrowRight } from 'lucide-react';
+import { User, LogIn, Eye, EyeOff, ShieldCheck, GraduationCap, School } from 'lucide-react';
 
 export const LoginScreen = ({ onLogin }) => {
+  const [activeRole, setActiveRole] = useState('student'); // 'student' | 'teacher' | 'admin'
   const [userId, setUserId] = useState('STD1001');
   const [password, setPassword] = useState('password123');
   const [showPassword, setShowPassword] = useState(false);
 
+  const handleRoleChange = (role) => {
+    setActiveRole(role);
+    if (role === 'student') {
+      setUserId('STD1001');
+      setPassword('password123');
+    } else if (role === 'teacher') {
+      setUserId('TCH2001');
+      setPassword('teacher123');
+    } else if (role === 'admin') {
+      setUserId('ADM3001');
+      setPassword('admin123');
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(userId || 'STD1001');
+    onLogin(activeRole, userId);
+  };
+
+  const handleQuickDemo = (role) => {
+    const demoIds = { student: 'STD1001', teacher: 'TCH2001', admin: 'ADM3001' };
+    onLogin(role, demoIds[role]);
   };
 
   return (
-    <div className="login-screen">
-      <div className="login-top-bar">
-        <button className="back-btn" onClick={() => onLogin('STD1001')} title="Fast Direct Demo Login">
-          <ChevronLeft size={24} />
-        </button>
-      </div>
-
+    <div className={`login-screen role-theme-${activeRole}`}>
       <div className="login-header-text">
-        <h1>Login</h1>
-        <p>Fast Experience with Simple & Auto Login</p>
+        <h1>NOORIA ACADEMY</h1>
+        <p>Smart School Management Portal</p>
       </div>
 
       <div className="login-card-container">
         {/* Official Nooria Children Academy Logo */}
-        <div className="school-logo-emblem" style={{ width: '110px', height: '110px' }}>
+        <div className="school-logo-emblem" style={{ width: '90px', height: '90px' }}>
           <img src="/nooria-logo.svg" alt="NOORIA CHILDREN ACADEMY Logo" style={{ width: '100%', height: '100%' }} />
         </div>
 
+        {/* Role Selector Tabs */}
+        <div className="role-selector-tabs">
+          <button 
+            type="button"
+            className={`role-tab ${activeRole === 'student' ? 'active' : ''}`}
+            onClick={() => handleRoleChange('student')}
+          >
+            <GraduationCap size={16} />
+            <span>Student</span>
+          </button>
+          <button 
+            type="button"
+            className={`role-tab ${activeRole === 'teacher' ? 'active' : ''}`}
+            onClick={() => handleRoleChange('teacher')}
+          >
+            <User size={16} />
+            <span>Teacher</span>
+          </button>
+          <button 
+            type="button"
+            className={`role-tab ${activeRole === 'admin' ? 'active' : ''}`}
+            onClick={() => handleRoleChange('admin')}
+          >
+            <ShieldCheck size={16} />
+            <span>Admin</span>
+          </button>
+        </div>
+
         <div className="student-portal-title">
-          <div className="student-icon-wrapper">
-            <User size={28} />
+          <div className={`student-icon-wrapper role-bg-${activeRole}`}>
+            {activeRole === 'student' && <GraduationCap size={24} />}
+            {activeRole === 'teacher' && <User size={24} />}
+            {activeRole === 'admin' && <ShieldCheck size={24} />}
           </div>
-          <span>Student & Parent Login</span>
+          <span>
+            {activeRole === 'student' && 'Student & Parent Login'}
+            {activeRole === 'teacher' && 'Teacher / Faculty Portal'}
+            {activeRole === 'admin' && 'Admin & Principal Login'}
+          </span>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
@@ -42,7 +90,10 @@ export const LoginScreen = ({ onLogin }) => {
             <User size={18} className="input-icon" />
             <input 
               type="text" 
-              placeholder="User ID" 
+              placeholder={
+                activeRole === 'student' ? "Student ID (e.g. STD1001)" :
+                activeRole === 'teacher' ? "Staff ID (e.g. TCH2001)" : "Admin ID (e.g. ADM3001)"
+              }
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
               required
@@ -67,10 +118,38 @@ export const LoginScreen = ({ onLogin }) => {
             </button>
           </div>
 
-          <button type="submit" className="btn-login">
-            <LogIn size={18} /> LOGIN
+          <button type="submit" className={`btn-login btn-${activeRole}`}>
+            <LogIn size={18} /> LOGIN AS {activeRole.toUpperCase()}
           </button>
         </form>
+
+        {/* One-click Demo Account Pills */}
+        <div className="quick-demo-section">
+          <span className="quick-demo-label">Fast Demo Auto-Login:</span>
+          <div className="quick-demo-buttons">
+            <button 
+              type="button" 
+              className="demo-pill student-pill"
+              onClick={() => handleQuickDemo('student')}
+            >
+              🎓 Student
+            </button>
+            <button 
+              type="button" 
+              className="demo-pill teacher-pill"
+              onClick={() => handleQuickDemo('teacher')}
+            >
+              👩‍🏫 Teacher
+            </button>
+            <button 
+              type="button" 
+              className="demo-pill admin-pill"
+              onClick={() => handleQuickDemo('admin')}
+            >
+              🏛️ Admin
+            </button>
+          </div>
+        </div>
 
         <div className="login-footer">
           <span>Powered by</span>
@@ -82,3 +161,4 @@ export const LoginScreen = ({ onLogin }) => {
     </div>
   );
 };
+

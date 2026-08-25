@@ -4,19 +4,22 @@ import { Header } from './components/Header';
 import { BottomNav } from './components/BottomNav';
 import { LoginScreen } from './screens/LoginScreen';
 import { HomeScreen } from './screens/HomeScreen';
+import { TeacherHomeScreen } from './screens/TeacherHomeScreen';
+import { AdminHomeScreen } from './screens/AdminHomeScreen';
 import { AttendanceScreen } from './screens/AttendanceScreen';
 import { HomeworkScreen } from './screens/HomeworkScreen';
 import { ProfileScreen } from './screens/ProfileScreen';
 import { ModuleModals } from './components/ModuleModals';
-import { PWAInstallPrompt } from './components/PWAInstallPrompt';
 import './styles/index.css';
 
 export function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(true);
+  const [userRole, setUserRole] = useState('student'); // 'student' | 'teacher' | 'admin'
   const [currentTab, setCurrentTab] = useState('home');
   const [activeModal, setActiveModal] = useState(null);
 
-  const handleLogin = (id) => {
+  const handleLogin = (role = 'student', id) => {
+    setUserRole(role);
     setIsAuthenticated(true);
     setCurrentTab('home');
   };
@@ -46,14 +49,25 @@ export function App() {
         <>
           <Header 
             currentTab={currentTab} 
+            userRole={userRole}
             onNavigate={handleNavigate} 
             onOpenModal={handleOpenModal} 
           />
 
-          <PWAInstallPrompt />
+          {/* Banner removed - App download button moved to Profile page */}
 
           {currentTab === 'home' && (
-            <HomeScreen onNavigate={handleNavigate} onOpenModal={handleOpenModal} />
+            <>
+              {userRole === 'student' && (
+                <HomeScreen onNavigate={handleNavigate} onOpenModal={handleOpenModal} />
+              )}
+              {userRole === 'teacher' && (
+                <TeacherHomeScreen onNavigate={handleNavigate} onOpenModal={handleOpenModal} />
+              )}
+              {userRole === 'admin' && (
+                <AdminHomeScreen onNavigate={handleNavigate} onOpenModal={handleOpenModal} />
+              )}
+            </>
           )}
 
           {currentTab === 'attendance' && (
@@ -65,10 +79,10 @@ export function App() {
           )}
 
           {currentTab === 'profile' && (
-            <ProfileScreen onLogout={handleLogout} />
+            <ProfileScreen userRole={userRole} onLogout={handleLogout} />
           )}
 
-          <BottomNav activeTab={currentTab} onNavigate={handleNavigate} />
+          <BottomNav activeTab={currentTab} userRole={userRole} onNavigate={handleNavigate} onOpenModal={handleOpenModal} />
 
           <ModuleModals activeModal={activeModal} onClose={handleCloseModal} />
         </>
@@ -78,3 +92,4 @@ export function App() {
 }
 
 export default App;
+

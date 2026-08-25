@@ -764,6 +764,31 @@ body {
   text-align: center;
   box-shadow: var(--shadow-card);
   border: 1px solid #f1f5f9;
+  position: relative;
+}
+
+.profile-card-download-btn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: #e0f2fe;
+  color: #0284c7;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 180, 216, 0.2);
+  transition: all 0.2s ease;
+}
+
+.profile-card-download-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  transform: scale(1.08);
 }
 
 .avatar-circle-wrapper {
@@ -793,6 +818,12 @@ body {
   margin-bottom: 10px;
 }
 
+.id-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .id-badge-pill {
   background: #f1f5f9;
   color: #64748b;
@@ -800,6 +831,27 @@ body {
   border-radius: 14px;
   font-size: 0.82rem;
   font-weight: 700;
+}
+
+.download-icon-pill {
+  background: linear-gradient(135deg, #00b4d8 0%, #0d9488 100%);
+  color: #ffffff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 180, 216, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.download-icon-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 180, 216, 0.4);
 }
 
 .account-details-card {
@@ -990,4 +1042,529 @@ body {
   to {
     transform: translateY(0);
   }
+}
+
+/* ----------------------------------------------------
+   MULTI-ROLE LOGIN & THEMES STYLES
+   ---------------------------------------------------- */
+
+.role-theme-teacher {
+  background: linear-gradient(180deg, #0d9488 0%, #14b8a6 45%, #f0fdf4 75%, #ffffff 100%) !important;
+}
+
+.role-theme-admin {
+  background: linear-gradient(180deg, #312e81 0%, #4338ca 45%, #eef2ff 75%, #ffffff 100%) !important;
+}
+
+.role-selector-tabs {
+  display: flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 14px;
+  width: 100%;
+  margin-bottom: 18px;
+  gap: 4px;
+}
+
+.role-tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #64748b;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.role-tab.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.role-bg-teacher {
+  background-color: #0d9488 !important;
+}
+
+.role-bg-admin {
+  background-color: #4338ca !important;
+}
+
+.btn-teacher {
+  background-color: #0d9488 !important;
+}
+
+.btn-admin {
+  background-color: #4338ca !important;
+}
+
+.quick-demo-section {
+  width: 100%;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed #cbd5e1;
+  text-align: center;
+}
+
+.quick-demo-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.quick-demo-buttons {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+.demo-pill {
+  border: none;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.demo-pill:hover {
+  transform: translateY(-1px);
+}
+
+.student-pill {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.teacher-pill {
+  background: #ccfbf1;
+  color: #0f766e;
+}
+
+.admin-pill {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+/* Header Role Badges */
+.header-title-role-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-role-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-badge-student {
+  background: rgba(0, 180, 216, 0.2);
+  color: #00b4d8;
+  border: 1px solid rgba(0, 180, 216, 0.4);
+}
+
+.role-badge-teacher {
+  background: rgba(13, 148, 136, 0.25);
+  color: #2dd4bf;
+  border: 1px solid rgba(45, 212, 191, 0.4);
+}
+
+.role-badge-admin {
+  background: rgba(168, 85, 247, 0.25);
+  color: #c084fc;
+  border: 1px solid rgba(192, 132, 252, 0.4);
+}
+
+/* ----------------------------------------------------
+   TEACHER DASHBOARD STYLES
+   ---------------------------------------------------- */
+.teacher-home-container, .admin-home-container {
+  padding: 16px;
+}
+
+.teacher-summary-banner {
+  background: linear-gradient(135deg, #0d9488 0%, #115e59 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px -4px rgba(13, 148, 136, 0.3);
+}
+
+.teacher-badge-pill, .admin-badge-pill {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(4px);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.teacher-summary-banner h3, .admin-summary-banner h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 2px;
+}
+
+.teacher-summary-banner p, .admin-summary-banner p {
+  font-size: 0.8rem;
+  opacity: 0.9;
+  margin-bottom: 14px;
+}
+
+.teacher-kpi-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 8px;
+}
+
+.kpi-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.kpi-value {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+
+.kpi-value.highlight {
+  color: #fef08a;
+}
+
+.kpi-label {
+  font-size: 0.68rem;
+  opacity: 0.85;
+}
+
+.kpi-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.teacher-schedule-card, .admin-alerts-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  margin-top: 20px;
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--border-color);
+}
+
+.card-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.card-header-flex h4 {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.schedule-date {
+  font-size: 0.75rem;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-weight: 700;
+}
+
+.schedule-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.schedule-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f8fafc;
+  border-left: 3px solid #cbd5e1;
+}
+
+.schedule-item.active {
+  background: #f0fdf4;
+  border-left-color: #16a34a;
+}
+
+.period-time {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  width: 110px;
+}
+
+.period-details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.period-details strong {
+  font-size: 0.82rem;
+  color: #0f172a;
+}
+
+.period-details span {
+  font-size: 0.72rem;
+  color: #64748b;
+}
+
+.status-tag {
+  font-size: 0.68rem;
+  padding: 2px 6px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.status-tag.ongoing {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-tag.upcoming {
+  background: #e2e8f0;
+  color: #475569;
+}
+
+/* ----------------------------------------------------
+   ADMIN DASHBOARD STYLES
+   ---------------------------------------------------- */
+.admin-summary-banner {
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 18px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px -4px rgba(49, 46, 129, 0.4);
+}
+
+.admin-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.admin-stat-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.stat-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.student-stat-bg { background: #38bdf8; color: #0c4a6e; }
+.teacher-stat-bg { background: #818cf8; color: #1e1b4b; }
+.attendance-stat-bg { background: #4ade80; color: #052e16; }
+.fee-stat-bg { background: #fbbf24; color: #451a03; }
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.stat-label {
+  font-size: 0.65rem;
+  opacity: 0.8;
+}
+
+.fee-progress-section {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.fee-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  margin-bottom: 6px;
+  opacity: 0.9;
+}
+
+.progress-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: #10b981;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.alerts-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.alerts-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #334155;
+  line-height: 1.3;
+}
+
+.alert-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.alert-dot.red { background: #ef4444; }
+.alert-dot.yellow { background: #f59e0b; }
+.alert-dot.green { background: #10b981; }
+
+.bottom-nav-teacher .nav-item.active {
+  background-color: #0d9488 !important;
+}
+
+.bottom-nav-admin .nav-item.active {
+  background-color: #4338ca !important;
+}
+
+/* ----------------------------------------------------
+   PROFILE APP DOWNLOAD CARD STYLES
+   ---------------------------------------------------- */
+.profile-app-download-card {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #ffffff;
+  border-radius: 20px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.app-download-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.app-download-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #00b4d8 0%, #0d9488 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+}
+
+.app-download-info h4 {
+  font-size: 0.95rem;
+  font-weight: 800;
+  margin-bottom: 2px;
+  color: #ffffff;
+}
+
+.app-download-info p {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  line-height: 1.3;
+}
+
+.install-toast-msg {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-profile-download {
+  width: 100%;
+  background: linear-gradient(135deg, #00b4d8 0%, #0284c7 100%);
+  color: #ffffff;
+  border: none;
+  padding: 12px;
+  border-radius: 14px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(0, 180, 216, 0.35);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.btn-profile-download:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 180, 216, 0.45);
 }

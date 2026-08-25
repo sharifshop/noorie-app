@@ -1,16 +1,39 @@
 import React from 'react';
-import { Home, Check, FileText, User } from 'lucide-react';
+import { Home, Check, FileText, User, Users, CreditCard, CheckSquare, PlusCircle } from 'lucide-react';
 
-export const BottomNav = ({ activeTab, onNavigate }) => {
-  const navItems = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'attendance', label: 'Attendance', icon: Check },
-    { id: 'homework', label: 'Home Work', icon: FileText },
-    { id: 'profile', label: 'Profile', icon: User },
-  ];
+export const BottomNav = ({ activeTab, userRole = 'student', onNavigate, onOpenModal }) => {
+  const getNavItems = () => {
+    if (userRole === 'teacher') {
+      return [
+        { id: 'home', label: 'Home', icon: Home, action: () => onNavigate('home') },
+        { id: 'attendance', label: 'Attendance', icon: CheckSquare, action: () => onOpenModal ? onOpenModal('teacher_attendance') : onNavigate('attendance') },
+        { id: 'homework', label: 'Homework', icon: PlusCircle, action: () => onOpenModal ? onOpenModal('teacher_homework') : onNavigate('homework') },
+        { id: 'profile', label: 'Profile', icon: User, action: () => onNavigate('profile') },
+      ];
+    }
+
+    if (userRole === 'admin') {
+      return [
+        { id: 'home', label: 'Home', icon: Home, action: () => onNavigate('home') },
+        { id: 'staff', label: 'Staff', icon: Users, action: () => onOpenModal ? onOpenModal('admin_staff') : onNavigate('home') },
+        { id: 'fees', label: 'Fees', icon: CreditCard, action: () => onOpenModal ? onOpenModal('admin_fees') : onNavigate('home') },
+        { id: 'profile', label: 'Profile', icon: User, action: () => onNavigate('profile') },
+      ];
+    }
+
+    // Default Student
+    return [
+      { id: 'home', label: 'Home', icon: Home, action: () => onNavigate('home') },
+      { id: 'attendance', label: 'Attendance', icon: Check, action: () => onNavigate('attendance') },
+      { id: 'homework', label: 'Home Work', icon: FileText, action: () => onNavigate('homework') },
+      { id: 'profile', label: 'Profile', icon: User, action: () => onNavigate('profile') },
+    ];
+  };
+
+  const navItems = getNavItems();
 
   return (
-    <nav className="bottom-nav">
+    <nav className={`bottom-nav bottom-nav-${userRole}`}>
       {navItems.map((item) => {
         const IconComponent = item.icon;
         const isActive = activeTab === item.id;
@@ -18,7 +41,7 @@ export const BottomNav = ({ activeTab, onNavigate }) => {
           <button
             key={item.id}
             className={`nav-item ${isActive ? 'active' : ''}`}
-            onClick={() => onNavigate(item.id)}
+            onClick={item.action}
           >
             <IconComponent size={20} className="nav-icon" />
             <span>{item.label}</span>
@@ -28,3 +51,4 @@ export const BottomNav = ({ activeTab, onNavigate }) => {
     </nav>
   );
 };
+
