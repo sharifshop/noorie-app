@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, Search, Filter } from 'lucide-react';
+import { CheckCircle2, Circle, Search, Filter, BookOpen } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { homeworkList as initialHomework } from '../data/dummyData';
+import { api } from '../services/api';
 
 export const HomeworkScreen = () => {
   const [list, setList] = useState(initialHomework);
   const [filterSubject, setFilterSubject] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const toggleComplete = (id) => {
+  const toggleComplete = async (id) => {
+    // Optimistic UI update
     setList(prev => prev.map(item => {
       if (item.id === id) {
         const nextState = !item.completed;
@@ -23,6 +25,13 @@ export const HomeworkScreen = () => {
       }
       return item;
     }));
+
+    // Trigger backend API if connected
+    try {
+      await api.toggleHomeworkStatus(id);
+    } catch (e) {
+      // ignore
+    }
   };
 
   const filteredItems = list.filter(item => {
@@ -34,38 +43,24 @@ export const HomeworkScreen = () => {
 
   return (
     <div className="homework-content">
-      {/* Search & Filter Bar */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '4px' }}>
-        <div style={{ position: 'relative', flex: 1 }}>
-          <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+      {/* Search & Subject Filter Bar */}
+      <div className="search-filter-bar">
+        <div className="form-input-with-icon" style={{ flex: 1 }}>
+          <Search size={16} className="input-icon" />
           <input 
             type="text" 
-            placeholder="Search homework..." 
+            className="form-input"
+            placeholder="Search assignments..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '8px 12px 8px 36px',
-              borderRadius: '20px',
-              border: '1px solid #cbd5e1',
-              fontSize: '0.85rem',
-              outline: 'none'
-            }}
           />
         </div>
 
         <select 
           value={filterSubject} 
           onChange={(e) => setFilterSubject(e.target.value)}
-          style={{
-            padding: '8px 12px',
-            borderRadius: '20px',
-            border: '1px solid #cbd5e1',
-            fontSize: '0.82rem',
-            background: '#ffffff',
-            fontWeight: '600',
-            outline: 'none'
-          }}
+          className="form-select font-mono"
+          style={{ width: 'auto', fontSize: '12px', fontWeight: 600 }}
         >
           <option value="All">All Subjects</option>
           <option value="English">English</option>
@@ -75,52 +70,51 @@ export const HomeworkScreen = () => {
         </select>
       </div>
 
+      <div className="section-label" style={{ marginTop: '4px' }}>
+        <span>ACTIVE ASSIGNMENTS ({filteredItems.length})</span>
+      </div>
+
       {filteredItems.map((item) => (
         <div key={item.id} className="homework-card">
-          <div className="homework-tags-row">
-            <div className="tags-left">
-              <span 
-                className="subject-pill" 
-                style={{ backgroundColor: item.subjectBg, color: item.subjectColor }}
-              >
+          <div className="homework-card-header">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <span className="subject-tag">
                 {item.subject}
               </span>
-              <span className="type-pill">{item.type}</span>
+              <span className="status-pill not-marked" style={{ padding: '2px 8px', fontSize: '10px' }}>
+                {item.type}
+              </span>
             </div>
-            <span className="homework-date">{item.date}</span>
+            <span className="homework-date-text">{item.date}</span>
           </div>
 
           <h3 className="homework-title">{item.title}</h3>
           <p className="homework-desc">{item.description}</p>
 
-          <div className="homework-teacher-footer">
-            <div className="teacher-info">
-              <span className="teacher-avatar-icon">🧑‍🏫</span>
-              <span>Assigned by {item.assignedBy} • {item.classSec}</span>
+          <div className="homework-footer">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <BookOpen size={14} color="var(--slate)" />
+              <span>{item.assignedBy} · {item.classSec}</span>
             </div>
 
             <button 
               onClick={() => toggleComplete(item.id)}
+              className={`btn btn-sm ${item.completed ? 'btn-secondary' : 'btn-primary'}`}
               style={{
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '4px',
-                color: item.completed ? '#10b981' : '#94a3b8',
-                fontWeight: '700',
-                fontSize: '0.8rem'
+                color: item.completed ? 'var(--leaf)' : '#ffffff',
+                borderColor: item.completed ? 'var(--leaf-dim)' : 'var(--ink)'
               }}
-              title="Click to toggle submission status"
+              title="Click to toggle completion status"
             >
               {item.completed ? (
                 <>
-                  <CheckCircle2 size={20} color="#10b981" /> Completed
+                  <CheckCircle2 size={15} color="var(--leaf)" />
+                  <span>COMPLETED</span>
                 </>
               ) : (
                 <>
-                  <Circle size={20} color="#94a3b8" /> Mark Done
+                  <Circle size={15} />
+                  <span>MARK DONE</span>
                 </>
               )}
             </button>

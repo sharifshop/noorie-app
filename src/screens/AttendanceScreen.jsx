@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { attendanceMonths, attendanceSummary, dailyAttendance } from '../data/dummyData';
+import { AttendanceRegisterStrip } from '../components/AttendanceRegisterStrip';
 
 export const AttendanceScreen = () => {
   const [selectedMonth, setSelectedMonth] = useState('Apr 2026');
@@ -29,10 +30,43 @@ export const AttendanceScreen = () => {
   const currentStats = getStatsForMonth();
   const currentDailyList = getFilteredAttendance();
 
+  const getStatusPill = (status) => {
+    const s = status.toLowerCase();
+    if (s.includes('present')) {
+      return (
+        <span className="status-pill present">
+          <span className="status-dot"></span> P · Present
+        </span>
+      );
+    }
+    if (s.includes('absent')) {
+      return (
+        <span className="status-pill absent">
+          <span className="status-dot"></span> A · Absent
+        </span>
+      );
+    }
+    if (s.includes('holiday')) {
+      return (
+        <span className="status-pill holiday">
+          <span className="status-dot"></span> H · Holiday
+        </span>
+      );
+    }
+    return (
+      <span className="status-pill not-marked">
+        <span className="status-dot"></span> — · Not Marked
+      </span>
+    );
+  };
+
   return (
     <div className="attendance-content">
-      {/* Month Selection Horizontal Pills */}
-      <div className="month-label">Month Period:</div>
+      {/* Month Selection Horizontal Scroll Pills */}
+      <div className="section-label">
+        <span>SELECT ACADEMIC MONTH</span>
+      </div>
+
       <div className="period-scroll-pills">
         {attendanceMonths.map((m) => (
           <button
@@ -46,42 +80,61 @@ export const AttendanceScreen = () => {
       </div>
 
       {/* Monthly Performance Summary Card */}
-      <div className="performance-card">
-        <div className="performance-header">
-          <h3>Monthly Performance</h3>
-          <span>{currentStats.dateRange}</span>
+      <div className="summary-banner-card">
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <div>
+            <h3 style={{ fontSize: '1.15rem' }}>Monthly Performance</h3>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--slate)' }}>
+              {currentStats.dateRange}
+            </span>
+          </div>
+          <span className="status-pill present">
+            <span className="status-dot"></span> REGISTER VERIFIED
+          </span>
         </div>
 
-        <div className="stats-grid">
-          <div className="stat-item">
-            <span className="stat-number green">{currentStats.presentCount.toString().padStart(2, '0')}</span>
-            <span className="stat-label">Present</span>
+        {/* 3-up Stat Box */}
+        <div className="stat-cards-grid">
+          <div className="stat-box">
+            <span className="stat-box-value leaf font-mono">
+              {currentStats.presentCount.toString().padStart(2, '0')}
+            </span>
+            <span className="stat-box-label">PRESENT</span>
           </div>
 
-          <div className="stat-item">
-            <span className="stat-number red">{currentStats.absentCount.toString().padStart(2, '0')}</span>
-            <span className="stat-label">Absent</span>
+          <div className="stat-box">
+            <span className="stat-box-value signal font-mono">
+              {currentStats.absentCount.toString().padStart(2, '0')}
+            </span>
+            <span className="stat-box-label">ABSENT</span>
           </div>
 
-          <div className="stat-item">
-            <span className="stat-number orange">{currentStats.holidayCount.toString().padStart(2, '0')}</span>
-            <span className="stat-label">Holiday</span>
+          <div className="stat-box">
+            <span className="stat-box-value font-mono" style={{ color: 'var(--ink-soft)' }}>
+              {currentStats.holidayCount.toString().padStart(2, '0')}
+            </span>
+            <span className="stat-box-label">HOLIDAY</span>
           </div>
         </div>
       </div>
 
-      {/* Daily Attendance List */}
+      {/* Signature Element: Register Strip */}
+      <AttendanceRegisterStrip title={`ATTENDANCE STRIP · ${selectedMonth.toUpperCase()}`} />
+
+      {/* Daily Attendance Register List */}
+      <div className="section-label">
+        <span>DAILY ATTENDANCE LOG</span>
+      </div>
+
       <div className="daily-attendance-list">
         {currentDailyList.map((item) => (
           <div key={item.id} className="daily-row">
             <div className="daily-date-info">
-              <Calendar size={18} className="calendar-icon-box" />
+              <Calendar size={16} className="date-icon" />
               <span className="daily-date-text">{item.dateStr}</span>
             </div>
 
-            <span className={`status-badge ${item.statusClass}`}>
-              {item.status}
-            </span>
+            {getStatusPill(item.status)}
           </div>
         ))}
       </div>

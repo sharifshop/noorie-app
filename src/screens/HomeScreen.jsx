@@ -13,7 +13,8 @@ import {
   CreditCard, 
   Users 
 } from 'lucide-react';
-import { quickModules } from '../data/dummyData';
+import { quickModules, studentProfile } from '../data/dummyData';
+import { AttendanceRegisterStrip } from '../components/AttendanceRegisterStrip';
 
 const iconMap = {
   Check,
@@ -40,8 +41,40 @@ export const HomeScreen = ({ onNavigate, onOpenModal }) => {
   };
 
   return (
-    <div className="home-screen-content">
-      <h2 className="section-title">Quick Access Modules</h2>
+    <div className="home-screen-content" style={{ padding: '16px', flex: 1 }}>
+      {/* Student Overview Header Card */}
+      <div className="summary-banner-card">
+        <div className="banner-role-pill role-student">
+          <span className="status-dot" style={{ backgroundColor: 'var(--leaf)' }}></span>
+          <span>{studentProfile.classSection} · Roll #{studentProfile.rollNumber}</span>
+        </div>
+        <h3>{studentProfile.name}</h3>
+        <p>{studentProfile.school} • Academic Year {studentProfile.academicYear}</p>
+
+        {/* 3-up Stat Row Grid (Dashboard Shell Pattern) */}
+        <div className="stat-cards-grid">
+          <div className="stat-box" onClick={() => onNavigate('attendance')} style={{ cursor: 'pointer' }}>
+            <span className="stat-box-value leaf">92%</span>
+            <span className="stat-box-label">ATTENDANCE</span>
+          </div>
+          <div className="stat-box" onClick={() => onNavigate('homework')} style={{ cursor: 'pointer' }}>
+            <span className="stat-box-value marigold">3</span>
+            <span className="stat-box-label">HOMEWORKS DUE</span>
+          </div>
+          <div className="stat-box" onClick={() => onOpenModal('timetable')} style={{ cursor: 'pointer' }}>
+            <span className="stat-box-value font-mono" style={{ fontSize: '1.2rem', marginTop: '4px' }}>08:45</span>
+            <span className="stat-box-label">NEXT CLASS</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Signature Element: 10-Day Attendance Register Strip */}
+      <AttendanceRegisterStrip title="ATTENDANCE REGISTER STRIP (LAST 10 DAYS)" />
+
+      {/* Quick Access Modules Grid */}
+      <div className="section-label">
+        <span>SCHOOL MODULES</span>
+      </div>
 
       <div className="modules-grid">
         {quickModules.map((module) => {
@@ -52,11 +85,8 @@ export const HomeScreen = ({ onNavigate, onOpenModal }) => {
               className="module-card"
               onClick={() => handleModuleClick(module)}
             >
-              <div 
-                className="module-icon-box"
-                style={{ backgroundColor: module.bg, color: module.iconColor }}
-              >
-                <IconComp size={24} />
+              <div className="module-icon-box">
+                <IconComp size={20} />
                 {module.badge && (
                   <span className="module-card-badge">{module.badge}</span>
                 )}

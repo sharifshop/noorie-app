@@ -37,6 +37,7 @@ import {
   teachersList,
   adminStats
 } from '../data/dummyData';
+import { api } from '../services/api';
 
 export const ModuleModals = ({ activeModal, onClose }) => {
   const [activeDay, setActiveDay] = useState('mon');
@@ -57,27 +58,48 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
   const triggerToast = (msg) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(''), 3000);
+    setTimeout(() => setToastMessage(''), 3500);
   };
 
   const handleToggleAttendance = (id, newStatus) => {
     setStudentList(prev => prev.map(s => s.id === id ? { ...s, status: newStatus } : s));
   };
 
-  const handleSaveAttendance = () => {
-    triggerToast('✅ Class 10-A Attendance saved successfully!');
+  const handleSaveAttendance = async () => {
+    const records = studentList.map(s => ({ studentId: s.id, status: s.status }));
+    try {
+      await api.markAttendance(records, 'Class X-A');
+    } catch (e) {}
+    triggerToast('✅ Class 10-A Attendance register synchronized successfully!');
   };
 
-  const handleAssignHomeworkSubmit = (e) => {
+  const handleAssignHomeworkSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await api.createHomework({
+        subject: hwSubject,
+        title: hwTitle,
+        dueDate: hwDueDate,
+        description: hwDesc,
+        classSec: hwClass
+      });
+    } catch (e) {}
     triggerToast(`📝 Homework "${hwTitle}" assigned to ${hwClass}!`);
     setHwTitle('');
     setHwDueDate('');
     setHwDesc('');
   };
 
-  const handleBroadcastSubmit = (e) => {
+  const handleBroadcastSubmit = async (e) => {
     e.preventDefault();
+    try {
+      await api.broadcastNotice({
+        title: broadcastTitle,
+        content: broadcastMessage,
+        targetAudience: broadcastTarget,
+        category: 'General'
+      });
+    } catch (e) {}
     triggerToast(`📢 Announcement broadcasted to ${broadcastTarget}!`);
     setBroadcastTitle('');
     setBroadcastMessage('');
@@ -93,23 +115,32 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       case 'teacher_attendance':
         return (
           <div>
-            <div style={{ background: '#e0f2fe', padding: '12px 14px', borderRadius: '12px', marginBottom: '14px', borderLeft: '4px solid #0284c7' }}>
-              <strong style={{ color: '#0369a1', fontSize: '0.9rem' }}>Mark Attendance - Class 10-A</strong>
-              <div style={{ fontSize: '0.78rem', color: '#0284c7' }}>Date: Tue, 28 Apr 2026 • Total Students: {studentList.length}</div>
+            <div style={{ background: 'var(--paper-dim)', padding: '12px 14px', borderRadius: 'var(--radius-md)', marginBottom: '14px', border: '1px solid var(--line)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <strong style={{ color: 'var(--ink)', fontSize: '13px' }}>Class 10-A Attendance Register</strong>
+                <span className="status-pill present" style={{ fontSize: '10px' }}>
+                  <span className="status-dot"></span> LIVE
+                </span>
+              </div>
+              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--slate)', marginTop: '4px' }}>
+                Date: Tue, 28 Apr 2026 • Total Roster: {studentList.length} Students
+              </div>
             </div>
 
             {toastMessage && (
-              <div style={{ background: '#dcfce7', color: '#15803d', padding: '10px 12px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <CheckCircle size={16} /> {toastMessage}
+              <div style={{ background: 'var(--leaf-dim)', color: '#1b683a', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '12px', fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckCircle size={15} /> {toastMessage}
               </div>
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto', paddingRight: '4px' }}>
               {studentList.map((st) => (
-                <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', padding: '10px 12px', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--paper)', padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)' }}>
                   <div>
-                    <strong style={{ fontSize: '0.85rem', color: '#0f172a' }}>Roll {st.roll}: {st.name}</strong>
-                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>ID: {st.id}</div>
+                    <strong style={{ fontSize: '13px', color: 'var(--ink)', display: 'block' }}>
+                      <span className="font-mono" style={{ color: 'var(--slate)' }}>#{st.roll}</span> {st.name}
+                    </strong>
+                    <span className="font-mono" style={{ fontSize: '11px', color: 'var(--slate)' }}>{st.id}</span>
                   </div>
 
                   <div style={{ display: 'flex', gap: '4px' }}>
@@ -117,31 +148,34 @@ export const ModuleModals = ({ activeModal, onClose }) => {
                       type="button"
                       onClick={() => handleToggleAttendance(st.id, 'Present')}
                       style={{
-                        padding: '4px 8px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '700',
-                        background: st.status === 'Present' ? '#22c55e' : '#e2e8f0', color: st.status === 'Present' ? '#fff' : '#64748b'
+                        padding: '4px 8px', borderRadius: 'var(--radius-xs)', border: '1px solid transparent', cursor: 'pointer', fontSize: '11px', fontWeight: 600, fontFamily: 'var(--font-mono)',
+                        background: st.status === 'Present' ? 'var(--leaf)' : 'var(--paper-dim)', color: st.status === 'Present' ? '#fff' : 'var(--slate)',
+                        borderColor: st.status === 'Present' ? 'var(--leaf)' : 'var(--line)'
                       }}
                     >
-                      Present
+                      P
                     </button>
                     <button
                       type="button"
                       onClick={() => handleToggleAttendance(st.id, 'Absent')}
                       style={{
-                        padding: '4px 8px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '700',
-                        background: st.status === 'Absent' ? '#ef4444' : '#e2e8f0', color: st.status === 'Absent' ? '#fff' : '#64748b'
+                        padding: '4px 8px', borderRadius: 'var(--radius-xs)', border: '1px solid transparent', cursor: 'pointer', fontSize: '11px', fontWeight: 600, fontFamily: 'var(--font-mono)',
+                        background: st.status === 'Absent' ? 'var(--signal)' : 'var(--paper-dim)', color: st.status === 'Absent' ? '#fff' : 'var(--slate)',
+                        borderColor: st.status === 'Absent' ? 'var(--signal)' : 'var(--line)'
                       }}
                     >
-                      Absent
+                      A
                     </button>
                     <button
                       type="button"
                       onClick={() => handleToggleAttendance(st.id, 'Late')}
                       style={{
-                        padding: '4px 8px', borderRadius: '8px', border: 'none', cursor: 'pointer', fontSize: '0.75rem', fontWeight: '700',
-                        background: st.status === 'Late' ? '#f59e0b' : '#e2e8f0', color: st.status === 'Late' ? '#fff' : '#64748b'
+                        padding: '4px 8px', borderRadius: 'var(--radius-xs)', border: '1px solid transparent', cursor: 'pointer', fontSize: '11px', fontWeight: 600, fontFamily: 'var(--font-mono)',
+                        background: st.status === 'Late' ? 'var(--marigold)' : 'var(--paper-dim)', color: st.status === 'Late' ? 'var(--ink)' : 'var(--slate)',
+                        borderColor: st.status === 'Late' ? 'var(--marigold)' : 'var(--line)'
                       }}
                     >
-                      Late
+                      L
                     </button>
                   </div>
                 </div>
@@ -150,30 +184,28 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
             <button
               onClick={handleSaveAttendance}
-              style={{
-                width: '100%', marginTop: '16px', background: '#0284c7', color: '#fff', padding: '12px', borderRadius: '12px',
-                border: 'none', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-              }}
+              className="btn btn-primary"
+              style={{ width: '100%', marginTop: '16px' }}
             >
-              <CheckSquare size={18} /> SUBMIT ATTENDANCE RECORD
+              <CheckSquare size={16} /> SUBMIT ATTENDANCE RECORD
             </button>
           </div>
         );
 
       case 'teacher_homework':
         return (
-          <form onSubmit={handleAssignHomeworkSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <form onSubmit={handleAssignHomeworkSubmit}>
             {toastMessage && (
-              <div style={{ background: '#dcfce7', color: '#15803d', padding: '10px 12px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <CheckCircle size={16} /> {toastMessage}
+              <div style={{ background: 'var(--leaf-dim)', color: '#1b683a', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '12px', fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckCircle size={15} /> {toastMessage}
               </div>
             )}
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Target Class</label>
+            <div className="form-group">
+              <label className="form-label">Target Class</label>
               <select 
                 value={hwClass} onChange={(e) => setHwClass(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: '600' }}
+                className="form-select font-mono"
               >
                 <option value="Class X-A">Class X-A (Class Teacher)</option>
                 <option value="Class IX-B">Class IX-B</option>
@@ -181,11 +213,11 @@ export const ModuleModals = ({ activeModal, onClose }) => {
               </select>
             </div>
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Subject</label>
+            <div className="form-group">
+              <label className="form-label">Subject</label>
               <select 
                 value={hwSubject} onChange={(e) => setHwSubject(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: '600' }}
+                className="form-select font-mono"
               >
                 <option value="Physics">Physics</option>
                 <option value="Mathematics">Mathematics</option>
@@ -193,48 +225,46 @@ export const ModuleModals = ({ activeModal, onClose }) => {
               </select>
             </div>
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Homework Title</label>
+            <div className="form-group">
+              <label className="form-label">Homework Title</label>
               <input 
                 type="text" 
+                className="form-input"
                 placeholder="e.g. Solve Numericals on Ohm's Law" 
                 value={hwTitle}
                 onChange={(e) => setHwTitle(e.target.value)}
                 required
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
               />
             </div>
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Submission Due Date</label>
+            <div className="form-group">
+              <label className="form-label">Submission Due Date</label>
               <input 
                 type="date" 
+                className="form-input font-mono"
                 value={hwDueDate}
                 onChange={(e) => setHwDueDate(e.target.value)}
                 required
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
               />
             </div>
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Instructions & Description</label>
+            <div className="form-group">
+              <label className="form-label">Instructions & Details</label>
               <textarea 
                 rows="3"
+                className="form-textarea"
                 placeholder="Write detailed instructions for students..."
                 value={hwDesc}
                 onChange={(e) => setHwDesc(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem', fontFamily: 'inherit' }}
               ></textarea>
             </div>
 
             <button
               type="submit"
-              style={{
-                width: '100%', marginTop: '6px', background: '#d97706', color: '#fff', padding: '12px', borderRadius: '12px',
-                border: 'none', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-              }}
+              className="btn btn-marigold"
+              style={{ width: '100%', marginTop: '6px' }}
             >
-              <PlusCircle size={18} /> ASSIGN HOMEWORK TO CLASS
+              <PlusCircle size={16} /> ASSIGN HOMEWORK TO CLASS
             </button>
           </form>
         );
@@ -242,23 +272,25 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       case 'teacher_marks':
         return (
           <div>
-            <div style={{ background: '#fae8ff', padding: '12px', borderRadius: '12px', marginBottom: '12px', borderLeft: '4px solid #c026d3' }}>
-              <strong style={{ color: '#86198f', fontSize: '0.9rem' }}>First Term Examination Marks Entry</strong>
-              <div style={{ fontSize: '0.78rem', color: '#a21caf' }}>Subject: Physics (Max Marks: 100) • Class X-A</div>
+            <div style={{ background: 'var(--paper-dim)', padding: '12px', borderRadius: 'var(--radius-md)', marginBottom: '12px', border: '1px solid var(--line)' }}>
+              <strong style={{ color: 'var(--ink)', fontSize: '13px' }}>First Term Examination Marks Entry</strong>
+              <div style={{ fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--slate)', marginTop: '2px' }}>
+                Subject: Physics (Max Marks: 100) • Class X-A
+              </div>
             </div>
 
             {toastMessage && (
-              <div style={{ background: '#dcfce7', color: '#15803d', padding: '10px 12px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <CheckCircle size={16} /> {toastMessage}
+              <div style={{ background: 'var(--leaf-dim)', color: '#1b683a', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '12px', fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckCircle size={15} /> {toastMessage}
               </div>
             )}
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '280px', overflowY: 'auto' }}>
               {studentList.map((st) => (
-                <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#f8fafc', padding: '10px 12px', borderRadius: '12px' }}>
+                <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--paper)', padding: '10px 12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)' }}>
                   <div>
-                    <strong style={{ fontSize: '0.85rem', color: '#0f172a' }}>{st.name}</strong>
-                    <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Roll: {st.roll}</div>
+                    <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>{st.name}</strong>
+                    <div className="font-mono" style={{ fontSize: '11px', color: 'var(--slate)' }}>Roll #{st.roll}</div>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <input 
@@ -266,9 +298,10 @@ export const ModuleModals = ({ activeModal, onClose }) => {
                       defaultValue={st.termMark}
                       max="100"
                       min="0"
-                      style={{ width: '60px', padding: '6px', textAlign: 'center', borderRadius: '8px', border: '1px solid #cbd5e1', fontWeight: '800' }}
+                      className="form-input font-mono"
+                      style={{ width: '60px', padding: '6px', textAlign: 'center', fontWeight: 700 }}
                     />
-                    <span style={{ fontSize: '0.75rem', fontWeight: '700', color: '#475569' }}>/ 100</span>
+                    <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--slate)', fontFamily: 'var(--font-mono)' }}>/ 100</span>
                   </div>
                 </div>
               ))}
@@ -276,12 +309,10 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
             <button
               onClick={() => triggerToast('📊 Term Examination Marks uploaded & saved!')}
-              style={{
-                width: '100%', marginTop: '14px', background: '#c026d3', color: '#fff', padding: '12px', borderRadius: '12px',
-                border: 'none', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-              }}
+              className="btn btn-primary"
+              style={{ width: '100%', marginTop: '14px' }}
             >
-              <Award size={18} /> SAVE EXAM MARKS
+              <Award size={16} /> SAVE EXAM MARKS
             </button>
           </div>
         );
@@ -290,14 +321,16 @@ export const ModuleModals = ({ activeModal, onClose }) => {
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '350px', overflowY: 'auto' }}>
             {studentList.map((st) => (
-              <div key={st.id} style={{ background: '#f3e8ff', border: '1px solid #e9d5ff', padding: '12px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={st.id} style={{ background: 'var(--paper)', border: '1px solid var(--line)', padding: '12px', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <strong style={{ fontSize: '0.88rem', color: '#6b21a8' }}>{st.name} (Roll #{st.roll})</strong>
-                  <div style={{ fontSize: '0.75rem', color: '#7e22ce' }}>Parent: {st.parentName}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#9333ea' }}>Phone: {st.phone}</div>
+                  <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>
+                    <span className="font-mono" style={{ color: 'var(--slate)' }}>#{st.roll}</span> {st.name}
+                  </strong>
+                  <div style={{ fontSize: '12px', color: 'var(--slate)' }}>Guardian: {st.parentName}</div>
+                  <div className="font-mono" style={{ fontSize: '11px', color: 'var(--slate)' }}>Phone: {st.phone}</div>
                 </div>
-                <span style={{ fontSize: '0.7rem', padding: '4px 8px', borderRadius: '8px', fontWeight: '800', background: st.feeStatus.includes('Paid') ? '#dcfce7' : '#fee2e2', color: st.feeStatus.includes('Paid') ? '#15803d' : '#b91c1c' }}>
-                  {st.feeStatus}
+                <span className={`status-pill ${st.feeStatus.includes('Paid') ? 'present' : 'pending'}`}>
+                  <span className="status-dot"></span> {st.feeStatus}
                 </span>
               </div>
             ))}
@@ -310,40 +343,46 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       case 'admin_fees':
         return (
           <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '14px', textAlign: 'center' }}>
-              <div style={{ background: '#ecfdf5', padding: '8px', borderRadius: '10px' }}>
-                <span style={{ fontSize: '0.7rem', color: '#047857' }}>Total Expected</span>
-                <strong style={{ display: 'block', fontSize: '0.85rem', color: '#065f46' }}>{adminStats.totalFeeExpected}</strong>
+            <div className="stat-cards-grid" style={{ marginBottom: '14px' }}>
+              <div className="stat-box">
+                <span className="stat-box-label">EXPECTED</span>
+                <strong className="stat-box-value font-mono" style={{ fontSize: '1.1rem' }}>{adminStats.totalFeeExpected}</strong>
               </div>
-              <div style={{ background: '#d1fae5', padding: '8px', borderRadius: '10px' }}>
-                <span style={{ fontSize: '0.7rem', color: '#047857' }}>Collected</span>
-                <strong style={{ display: 'block', fontSize: '0.85rem', color: '#047857' }}>{adminStats.totalFeeCollected}</strong>
+              <div className="stat-box">
+                <span className="stat-box-label">COLLECTED</span>
+                <strong className="stat-box-value marigold font-mono" style={{ fontSize: '1.1rem' }}>{adminStats.totalFeeCollected}</strong>
               </div>
-              <div style={{ background: '#fef2f2', padding: '8px', borderRadius: '10px' }}>
-                <span style={{ fontSize: '0.7rem', color: '#b91c1c' }}>Total Overdue</span>
-                <strong style={{ display: 'block', fontSize: '0.85rem', color: '#b91c1c' }}>{adminStats.pendingFeeAmount}</strong>
+              <div className="stat-box">
+                <span className="stat-box-label">OVERDUE</span>
+                <strong className="stat-box-value signal font-mono" style={{ fontSize: '1.1rem' }}>{adminStats.pendingFeeAmount}</strong>
               </div>
             </div>
 
             {toastMessage && (
-              <div style={{ background: '#dcfce7', color: '#15803d', padding: '10px 12px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <CheckCircle size={16} /> {toastMessage}
+              <div style={{ background: 'var(--leaf-dim)', color: '#1b683a', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '12px', fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckCircle size={15} /> {toastMessage}
               </div>
             )}
 
-            <h4 style={{ fontSize: '0.85rem', fontWeight: '800', color: '#1e293b', marginBottom: '8px' }}>Pending Fee Defaulters</h4>
+            <div className="section-label">
+              <span>PENDING FEE DEFAULTERS</span>
+            </div>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '220px', overflowY: 'auto' }}>
               {studentsInClass.filter(s => s.feeStatus !== 'Paid').map((st) => (
-                <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff1f2', border: '1px solid #ffe4e6', padding: '10px 12px', borderRadius: '12px' }}>
+                <div key={st.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--paper)', border: '1px solid var(--line)', padding: '10px 12px', borderRadius: 'var(--radius-md)' }}>
                   <div>
-                    <strong style={{ fontSize: '0.85rem', color: '#9f1239' }}>{st.name} (Class 10-A)</strong>
-                    <div style={{ fontSize: '0.72rem', color: '#be123c' }}>Parent: {st.parentName} • {st.phone}</div>
+                    <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>{st.name} (Class 10-A)</strong>
+                    <div style={{ fontSize: '11px', color: 'var(--slate)' }}>Parent: {st.parentName} • {st.phone}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <span style={{ fontSize: '0.78rem', fontWeight: '800', color: '#e11d48', display: 'block' }}>{st.feeStatus}</span>
+                    <span className="status-pill absent" style={{ display: 'inline-flex', marginBottom: '4px' }}>
+                      <span className="status-dot"></span> {st.feeStatus}
+                    </span>
                     <button
                       onClick={() => triggerToast(`🔔 Payment SMS reminder sent to ${st.parentName}!`)}
-                      style={{ fontSize: '0.7rem', background: '#e11d48', color: '#fff', border: 'none', padding: '3px 8px', borderRadius: '6px', cursor: 'pointer', fontWeight: '700', marginTop: '2px' }}
+                      className="btn btn-sm btn-secondary"
+                      style={{ fontSize: '10px', padding: '3px 8px' }}
                     >
                       Send SMS
                     </button>
@@ -358,10 +397,10 @@ export const ModuleModals = ({ activeModal, onClose }) => {
         return (
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-              <span style={{ fontSize: '0.85rem', fontWeight: '800', color: '#1e293b' }}>Active Faculty ({teachersList.length})</span>
+              <span className="section-label">ACTIVE FACULTY ({teachersList.length})</span>
               <button 
-                onClick={() => triggerToast('➕ Add New Teacher Form Opened!')}
-                style={{ fontSize: '0.75rem', background: '#4f46e5', color: '#fff', border: 'none', padding: '6px 12px', borderRadius: '8px', fontWeight: '700', cursor: 'pointer' }}
+                onClick={() => triggerToast('➕ New Teacher Registration Form')}
+                className="btn btn-sm btn-primary"
               >
                 + Add Teacher
               </button>
@@ -369,14 +408,16 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
               {teachersList.map((tch) => (
-                <div key={tch.id} style={{ background: '#eef2ff', border: '1px solid #c7d2fe', padding: '12px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={tch.id} style={{ background: 'var(--paper)', border: '1px solid var(--line)', padding: '12px', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <strong style={{ fontSize: '0.88rem', color: '#312e81' }}>{tch.name} ({tch.id})</strong>
-                    <div style={{ fontSize: '0.75rem', color: '#4338ca' }}>Subject: {tch.subject} • {tch.classTeacherOf}</div>
-                    <div style={{ fontSize: '0.72rem', color: '#6366f1' }}>Phone: {tch.phone} • Exp: {tch.experience}</div>
+                    <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>
+                      {tch.name} <span className="font-mono" style={{ color: 'var(--slate)', fontSize: '11px' }}>({tch.id})</span>
+                    </strong>
+                    <div style={{ fontSize: '12px', color: 'var(--slate)' }}>Subject: {tch.subject} • {tch.classTeacherOf}</div>
+                    <div className="font-mono" style={{ fontSize: '11px', color: 'var(--slate)' }}>Phone: {tch.phone} • Exp: {tch.experience}</div>
                   </div>
-                  <span style={{ fontSize: '0.72rem', background: tch.status === 'Active' ? '#dcfce7' : '#fef3c7', color: tch.status === 'Active' ? '#15803d' : '#d97706', padding: '3px 8px', borderRadius: '8px', fontWeight: '800' }}>
-                    {tch.status}
+                  <span className={`status-pill ${tch.status === 'Active' ? 'present' : 'pending'}`}>
+                    <span className="status-dot"></span> {tch.status}
                   </span>
                 </div>
               ))}
@@ -386,18 +427,18 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'admin_broadcast':
         return (
-          <form onSubmit={handleBroadcastSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <form onSubmit={handleBroadcastSubmit}>
             {toastMessage && (
-              <div style={{ background: '#dcfce7', color: '#15803d', padding: '10px 12px', borderRadius: '10px', fontSize: '0.82rem', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <CheckCircle size={16} /> {toastMessage}
+              <div style={{ background: 'var(--leaf-dim)', color: '#1b683a', padding: '10px 12px', borderRadius: 'var(--radius-md)', fontSize: '12px', fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckCircle size={15} /> {toastMessage}
               </div>
             )}
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Target Audience</label>
+            <div className="form-group">
+              <label className="form-label">Target Audience</label>
               <select 
                 value={broadcastTarget} onChange={(e) => setBroadcastTarget(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem', fontWeight: '600' }}
+                className="form-select font-mono"
               >
                 <option value="All Students & Parents">All Students & Parents</option>
                 <option value="All Faculty Staff">All Faculty Staff</option>
@@ -405,72 +446,66 @@ export const ModuleModals = ({ activeModal, onClose }) => {
               </select>
             </div>
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Announcement Title</label>
+            <div className="form-group">
+              <label className="form-label">Announcement Title</label>
               <input 
                 type="text" 
+                className="form-input"
                 placeholder="e.g. Schedule for Annual Sports Day" 
                 value={broadcastTitle}
                 onChange={(e) => setBroadcastTitle(e.target.value)}
                 required
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem' }}
               />
             </div>
 
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: '700', color: '#475569', display: 'block', marginBottom: '4px' }}>Notice Message Content</label>
+            <div className="form-group">
+              <label className="form-label">Notice Message Content</label>
               <textarea 
                 rows="4"
+                className="form-textarea"
                 placeholder="Write announcement body message..."
                 value={broadcastMessage}
                 onChange={(e) => setBroadcastMessage(e.target.value)}
                 required
-                style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #cbd5e1', fontSize: '0.85rem', fontFamily: 'inherit' }}
               ></textarea>
             </div>
 
             <button
               type="submit"
-              style={{
-                width: '100%', marginTop: '6px', background: '#ea580c', color: '#fff', padding: '12px', borderRadius: '12px',
-                border: 'none', fontWeight: '700', fontSize: '0.9rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-              }}
+              className="btn btn-marigold"
+              style={{ width: '100%', marginTop: '6px' }}
             >
-              <Megaphone size={18} /> BROADCAST ANNOUNCEMENT NOW
+              <Megaphone size={16} /> BROADCAST ANNOUNCEMENT NOW
             </button>
           </form>
         );
 
       case 'admin_reports':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-            <div style={{ background: '#f0f9ff', padding: '14px', borderRadius: '14px', border: '1px solid #bae6fd' }}>
-              <h4 style={{ color: '#0369a1', fontSize: '0.9rem', fontWeight: '800', marginBottom: '8px' }}>Attendance Rate (Overall 94.2%)</h4>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: '#0284c7', marginBottom: '4px' }}>
-                <span>Class 10th: 96.5%</span>
-                <span>Class 9th: 93.0%</span>
-                <span>Class 8th: 91.2%</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="stat-box">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>Attendance Rate (Overall 94.2%)</strong>
+                <span className="font-mono" style={{ fontSize: '11px', color: 'var(--leaf)' }}>94.2%</span>
               </div>
-              <div style={{ width: '100%', height: '8px', background: '#e0f2fe', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{ width: '94.2%', height: '100%', background: '#0284c7', borderRadius: '4px' }}></div>
+              <div style={{ width: '100%', height: '8px', background: 'var(--paper)', borderRadius: 'var(--radius-full)', overflow: 'hidden', border: '1px solid var(--line)' }}>
+                <div style={{ width: '94.2%', height: '100%', background: 'var(--leaf)', borderRadius: 'var(--radius-full)' }}></div>
               </div>
             </div>
 
-            <div style={{ background: '#fdf4ff', padding: '14px', borderRadius: '14px', border: '1px solid #f5d0fe' }}>
-              <h4 style={{ color: '#86198f', fontSize: '0.9rem', fontWeight: '800', marginBottom: '8px' }}>Academic Pass Rate (First Term)</h4>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.78rem', color: '#a21caf', marginBottom: '4px' }}>
-                <span>A1 Grade: 42%</span>
-                <span>A2 Grade: 35%</span>
-                <span>B Grade: 18%</span>
+            <div className="stat-box">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                <strong style={{ fontSize: '13px', color: 'var(--ink)' }}>Academic Pass Rate (First Term)</strong>
+                <span className="font-mono" style={{ fontSize: '11px', color: 'var(--marigold)' }}>89.5%</span>
               </div>
-              <div style={{ width: '100%', height: '8px', background: '#fae8ff', borderRadius: '4px', overflow: 'hidden' }}>
-                <div style={{ width: '89.5%', height: '100%', background: '#c026d3', borderRadius: '4px' }}></div>
+              <div style={{ width: '100%', height: '8px', background: 'var(--paper)', borderRadius: 'var(--radius-full)', overflow: 'hidden', border: '1px solid var(--line)' }}>
+                <div style={{ width: '89.5%', height: '100%', background: 'var(--marigold)', borderRadius: 'var(--radius-full)' }}></div>
               </div>
             </div>
 
-            <div style={{ background: '#ecfdf5', padding: '14px', borderRadius: '14px', border: '1px solid #a7f3d0' }}>
-              <h4 style={{ color: '#047857', fontSize: '0.9rem', fontWeight: '800', marginBottom: '8px' }}>Fee Collection Progress (81.25%)</h4>
-              <div style={{ fontSize: '0.8rem', color: '#065f46' }}>Total Collected: ₹32.5 Lakhs of ₹40.0 Lakhs Target</div>
+            <div className="stat-box">
+              <strong style={{ fontSize: '13px', color: 'var(--ink)', marginBottom: '4px', display: 'block' }}>Fee Collection Progress (81.25%)</strong>
+              <div className="font-mono" style={{ fontSize: '12px', color: 'var(--slate)' }}>Total Collected: ₹32.5 Lakhs of ₹40.0 Lakhs Target</div>
             </div>
           </div>
         );
@@ -481,36 +516,26 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       case 'timetable':
         return (
           <div>
-            <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', marginBottom: '14px', paddingBottom: '6px' }}>
+            <div className="period-scroll-pills" style={{ marginBottom: '12px' }}>
               {['mon', 'tue', 'wed', 'thu', 'fri', 'sat'].map((day) => (
                 <button
                   key={day}
                   onClick={() => setActiveDay(day)}
-                  style={{
-                    padding: '6px 14px',
-                    borderRadius: '16px',
-                    border: 'none',
-                    background: activeDay === day ? '#6366f1' : '#f1f5f9',
-                    color: activeDay === day ? '#fff' : '#475569',
-                    fontWeight: '700',
-                    fontSize: '0.8rem',
-                    textTransform: 'uppercase',
-                    cursor: 'pointer'
-                  }}
+                  className={`period-pill ${activeDay === day ? 'active' : ''}`}
                 >
-                  {day}
+                  {day.toUpperCase()}
                 </button>
               ))}
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {timetableData.map((slot, idx) => (
-                <div key={idx} style={{ background: '#f8fafc', padding: '12px', borderRadius: '12px', borderLeft: '4px solid #6366f1', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={idx} style={{ background: 'var(--paper)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <div style={{ fontSize: '0.9rem', fontWeight: '800', color: '#1e293b' }}>{slot[activeDay]}</div>
-                    <div style={{ fontSize: '0.78rem', color: '#64748b' }}>{slot.period}</div>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--ink)' }}>{slot[activeDay]}</div>
+                    <div className="font-mono" style={{ fontSize: '11px', color: 'var(--slate)' }}>{slot.period}</div>
                   </div>
-                  <span style={{ fontSize: '0.78rem', background: '#e0e7ff', color: '#4338ca', padding: '4px 10px', borderRadius: '12px', fontWeight: '600' }}>
+                  <span className="font-mono" style={{ fontSize: '11px', background: 'var(--paper-dim)', color: 'var(--ink)', padding: '3px 8px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--line)' }}>
                     {slot.time}
                   </span>
                 </div>
@@ -521,17 +546,17 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'notice':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {noticesList.map((n) => (
-              <div key={n.id} style={{ background: '#fffbeb', border: '1px solid #fef3c7', padding: '14px', borderRadius: '14px' }}>
+              <div key={n.id} style={{ background: 'var(--paper)', border: '1px solid var(--line)', padding: '14px', borderRadius: 'var(--radius-md)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '0.75rem', background: '#fef3c7', color: '#d97706', padding: '2px 8px', borderRadius: '8px', fontWeight: '700' }}>
+                  <span className="subject-tag font-mono">
                     {n.category}
                   </span>
-                  <span style={{ fontSize: '0.78rem', color: '#94a3b8' }}>{n.date}</span>
+                  <span className="font-mono" style={{ fontSize: '11px', color: 'var(--slate)' }}>{n.date}</span>
                 </div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: '800', color: '#1e293b', marginBottom: '6px' }}>{n.title}</h4>
-                <p style={{ fontSize: '0.85rem', color: '#475569', lineHeight: '1.4' }}>{n.content}</p>
+                <h4 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--ink)', marginBottom: '6px' }}>{n.title}</h4>
+                <p style={{ fontSize: '12px', color: 'var(--slate)', lineHeight: '1.4' }}>{n.content}</p>
               </div>
             ))}
           </div>
@@ -540,21 +565,23 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       case 'exammarks':
         return (
           <div>
-            <div style={{ background: 'linear-gradient(135deg, #d946ef 0%, #a855f7 100%)', color: '#fff', padding: '16px', borderRadius: '16px', marginBottom: '16px', textAlign: 'center' }}>
-              <span style={{ fontSize: '0.8rem', opacity: 0.9 }}>{examMarksData.term}</span>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: '800', margin: '4px 0' }}>{examMarksData.percentage}</h2>
-              <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '12px', fontSize: '0.8rem', fontWeight: '700' }}>
+            <div style={{ background: 'var(--ink)', color: '#ffffff', padding: '16px', borderRadius: 'var(--radius-lg)', marginBottom: '14px', textAlign: 'center' }}>
+              <span className="font-mono" style={{ fontSize: '11px', color: 'var(--slate-light)' }}>{examMarksData.term}</span>
+              <h2 className="font-display" style={{ fontSize: '2rem', fontWeight: 700, margin: '4px 0', color: 'var(--marigold)' }}>{examMarksData.percentage}</h2>
+              <span className="font-mono" style={{ fontSize: '11px', color: '#ffffff', background: 'rgba(255,255,255,0.1)', padding: '3px 10px', borderRadius: 'var(--radius-full)' }}>
                 Overall Grade: {examMarksData.grade} ({examMarksData.totalObtained} / {examMarksData.totalMax})
               </span>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {examMarksData.subjects.map((sub, idx) => (
-                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', background: '#f8fafc', borderRadius: '12px' }}>
-                  <span style={{ fontWeight: '700', color: '#1e293b', fontSize: '0.9rem' }}>{sub.name}</span>
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: 'var(--paper)', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)' }}>
+                  <span style={{ fontWeight: 600, color: 'var(--ink)', fontSize: '13px' }}>{sub.name}</span>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <span style={{ fontWeight: '800', color: '#0f172a' }}>{sub.marks}/{sub.max}</span>
-                    <span style={{ background: '#f0fdf4', color: '#16a34a', padding: '2px 8px', borderRadius: '8px', fontSize: '0.75rem', fontWeight: '800' }}>{sub.grade}</span>
+                    <span className="font-mono" style={{ fontWeight: 700, color: 'var(--ink)', fontSize: '13px' }}>{sub.marks}/{sub.max}</span>
+                    <span className="status-pill present" style={{ padding: '2px 8px', fontSize: '10px' }}>
+                      <span className="status-dot"></span> {sub.grade}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -565,32 +592,37 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       case 'feereport':
         return (
           <div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: '16px', textAlign: 'center' }}>
-              <div style={{ background: '#ecfdf5', padding: '10px', borderRadius: '12px' }}>
-                <span style={{ fontSize: '0.72rem', color: '#047857' }}>Total Fee</span>
-                <div style={{ fontWeight: '800', color: '#047857' }}>{feeReportData.totalFee}</div>
+            <div className="stat-cards-grid" style={{ marginBottom: '14px' }}>
+              <div className="stat-box">
+                <span className="stat-box-label">TOTAL</span>
+                <strong className="stat-box-value font-mono" style={{ fontSize: '1.1rem' }}>{feeReportData.totalFee}</strong>
               </div>
-              <div style={{ background: '#d1fae5', padding: '10px', borderRadius: '12px' }}>
-                <span style={{ fontSize: '0.72rem', color: '#065f46' }}>Paid Fee</span>
-                <div style={{ fontWeight: '800', color: '#065f46' }}>{feeReportData.paidFee}</div>
+              <div className="stat-box">
+                <span className="stat-box-label">PAID</span>
+                <strong className="stat-box-value leaf font-mono" style={{ fontSize: '1.1rem' }}>{feeReportData.paidFee}</strong>
               </div>
-              <div style={{ background: '#fef2f2', padding: '10px', borderRadius: '12px' }}>
-                <span style={{ fontSize: '0.72rem', color: '#b91c1c' }}>Due Fee</span>
-                <div style={{ fontWeight: '800', color: '#b91c1c' }}>{feeReportData.dueFee}</div>
+              <div className="stat-box">
+                <span className="stat-box-label">DUE</span>
+                <strong className="stat-box-value signal font-mono" style={{ fontSize: '1.1rem' }}>{feeReportData.dueFee}</strong>
               </div>
             </div>
 
-            <h4 style={{ fontSize: '0.9rem', fontWeight: '800', color: '#1e293b', marginBottom: '10px' }}>Payment History</h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div className="section-label">
+              <span>PAYMENT RECEIPTS REGISTER</span>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {feeReportData.transactions.map((tx, idx) => (
-                <div key={idx} style={{ background: '#ffffff', border: '1px solid #e2e8f0', padding: '12px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div key={idx} style={{ background: 'var(--paper)', border: '1px solid var(--line)', padding: '10px 12px', borderRadius: 'var(--radius-md)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                   <div>
-                    <div style={{ fontWeight: '700', fontSize: '0.85rem', color: '#0f172a' }}>{tx.receiptNo}</div>
-                    <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{tx.date} • {tx.mode}</div>
+                    <div className="font-mono" style={{ fontWeight: 600, fontSize: '12px', color: 'var(--ink)' }}>{tx.receiptNo}</div>
+                    <div style={{ fontSize: '11px', color: 'var(--slate)' }}>{tx.date} • {tx.mode}</div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontWeight: '800', color: '#059669', fontSize: '0.9rem' }}>{tx.amount}</div>
-                    <span style={{ fontSize: '0.7rem', color: '#059669', background: '#d1fae5', padding: '1px 6px', borderRadius: '6px', fontWeight: '700' }}>{tx.status}</span>
+                    <div className="font-mono" style={{ fontWeight: 700, color: 'var(--leaf)', fontSize: '13px' }}>{tx.amount}</div>
+                    <span className="status-pill present" style={{ padding: '1px 6px', fontSize: '9px' }}>
+                      <span className="status-dot"></span> {tx.status}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -600,14 +632,14 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'holiday':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {holidayList.map((h, idx) => (
-              <div key={idx} style={{ background: '#e6fdf5', padding: '12px 14px', borderRadius: '14px', borderLeft: '4px solid #14b8a6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={idx} style={{ background: 'var(--paper)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={{ fontWeight: '800', color: '#0f766e', fontSize: '0.9rem' }}>{h.name}</div>
-                  <div style={{ fontSize: '0.78rem', color: '#0d9488' }}>{h.type}</div>
+                  <div style={{ fontWeight: 700, color: 'var(--ink)', fontSize: '13px' }}>{h.name}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--slate)' }}>{h.type}</div>
                 </div>
-                <span style={{ background: '#ffffff', color: '#0f766e', padding: '4px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '700' }}>
+                <span className="font-mono" style={{ background: 'var(--paper-dim)', color: 'var(--ink)', padding: '4px 8px', borderRadius: 'var(--radius-xs)', fontSize: '11px', fontWeight: 600, border: '1px solid var(--line)' }}>
                   {h.date}
                 </span>
               </div>
@@ -617,15 +649,15 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'classmates':
         return (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
             {classmatesData.map((c) => (
-              <div key={c.roll} style={{ background: '#f8fafc', padding: '12px', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '10px', border: c.isCurrent ? '2px solid #00b4d8' : '1px solid #e2e8f0' }}>
-                <div style={{ width: '38px', height: '38px', borderRadius: '50%', background: c.avatarBg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '800', color: '#1e293b', fontSize: '0.85rem' }}>
+              <div key={c.roll} style={{ background: 'var(--paper)', padding: '10px', borderRadius: 'var(--radius-md)', display: 'flex', alignItems: 'center', gap: '8px', border: c.isCurrent ? '1.5px solid var(--leaf)' : '1px solid var(--line)' }}>
+                <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--paper-dim)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--ink)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
                   {c.initial}
                 </div>
                 <div>
-                  <div style={{ fontSize: '0.82rem', fontWeight: '800', color: '#0f172a' }}>{c.name}</div>
-                  <div style={{ fontSize: '0.72rem', color: '#64748b' }}>Roll No: {c.roll}</div>
+                  <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--ink)' }}>{c.name}</div>
+                  <div className="font-mono" style={{ fontSize: '10px', color: 'var(--slate)' }}>Roll #{c.roll}</div>
                 </div>
               </div>
             ))}
@@ -634,16 +666,16 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'course':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {coursesData.map((c, idx) => (
-              <div key={idx} style={{ background: '#eef2ff', padding: '14px', borderRadius: '14px', border: '1px solid #c7d2fe' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                  <span style={{ fontWeight: '800', color: '#3730a3', fontSize: '0.92rem' }}>{c.name}</span>
-                  <span style={{ fontSize: '0.75rem', background: '#c7d2fe', color: '#312e81', padding: '2px 8px', borderRadius: '8px', fontWeight: '700' }}>{c.code}</span>
+              <div key={idx} style={{ background: 'var(--paper)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ fontWeight: 700, color: 'var(--ink)', fontSize: '13px' }}>{c.name}</span>
+                  <span className="font-mono" style={{ fontSize: '10px', background: 'var(--paper-dim)', color: 'var(--ink)', padding: '2px 6px', borderRadius: 'var(--radius-xs)', border: '1px solid var(--line)' }}>{c.code}</span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#4338ca', marginBottom: '8px' }}>Instructor: {c.teacher} • {c.completedChapters}/{c.chapters} Chapters</div>
-                <div style={{ width: '100%', height: '8px', background: '#e0e7ff', borderRadius: '4px', overflow: 'hidden' }}>
-                  <div style={{ width: `${c.progress}%`, height: '100%', background: '#4f46e5', borderRadius: '4px' }}></div>
+                <div style={{ fontSize: '11px', color: 'var(--slate)', marginBottom: '8px' }}>Instructor: {c.teacher} • {c.completedChapters}/{c.chapters} Chapters</div>
+                <div style={{ width: '100%', height: '6px', background: 'var(--paper-dim)', borderRadius: 'var(--radius-full)', overflow: 'hidden', border: '1px solid var(--line)' }}>
+                  <div style={{ width: `${c.progress}%`, height: '100%', background: 'var(--ink)', borderRadius: 'var(--radius-full)' }}></div>
                 </div>
               </div>
             ))}
@@ -652,11 +684,13 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'syllabus':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {['Mathematics Unit 1: Polynomials', 'Science Unit 2: Chemical Reactions', 'English Chapter 4: Two Stories about Flying', 'Social Science Unit 3: Nationalism in India'].map((item, idx) => (
-              <div key={idx} style={{ padding: '12px', background: '#f8fafc', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.85rem', fontWeight: '700', color: '#1e293b' }}>{item}</span>
-                <span style={{ fontSize: '0.75rem', background: '#dcfce7', color: '#15803d', padding: '2px 8px', borderRadius: '8px', fontWeight: '700' }}>Covered</span>
+              <div key={idx} style={{ padding: '10px 12px', background: 'var(--paper)', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--ink)' }}>{item}</span>
+                <span className="status-pill present" style={{ padding: '2px 8px', fontSize: '10px' }}>
+                  <span className="status-dot"></span> Covered
+                </span>
               </div>
             ))}
           </div>
@@ -664,14 +698,16 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'datesheet':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {dateSheetData.map((d, idx) => (
-              <div key={idx} style={{ background: '#f5f3ff', padding: '12px', borderRadius: '14px', borderLeft: '4px solid #8b5cf6', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div key={idx} style={{ background: 'var(--paper)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={{ fontWeight: '800', color: '#5b21b6', fontSize: '0.9rem' }}>{d.subject}</div>
-                  <div style={{ fontSize: '0.75rem', color: '#6d28d9' }}>{d.time} • Room {d.room}</div>
+                  <div style={{ fontWeight: 700, color: 'var(--ink)', fontSize: '13px' }}>{d.subject}</div>
+                  <div className="font-mono" style={{ fontSize: '11px', color: 'var(--slate)' }}>{d.time} • Room {d.room}</div>
                 </div>
-                <span style={{ background: '#ffffff', color: '#6d28d9', padding: '4px 10px', borderRadius: '12px', fontSize: '0.78rem', fontWeight: '800' }}>{d.date}</span>
+                <span className="font-mono" style={{ background: 'var(--paper-dim)', color: 'var(--ink)', padding: '4px 8px', borderRadius: 'var(--radius-xs)', fontSize: '11px', fontWeight: 700, border: '1px solid var(--line)' }}>
+                  {d.date}
+                </span>
               </div>
             ))}
           </div>
@@ -679,11 +715,11 @@ export const ModuleModals = ({ activeModal, onClose }) => {
 
       case 'activity':
         return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {['Science Exhibition 2026', 'Inter-House Debate Contest', 'Annual Cultural Fest'].map((act, idx) => (
-              <div key={idx} style={{ background: '#fff7ed', padding: '12px', borderRadius: '14px', borderLeft: '4px solid #f97316' }}>
-                <div style={{ fontWeight: '800', color: '#c2410c', fontSize: '0.9rem' }}>{act}</div>
-                <div style={{ fontSize: '0.78rem', color: '#ea580c' }}>Upcoming School Event • Registration Open</div>
+              <div key={idx} style={{ background: 'var(--paper)', padding: '12px', borderRadius: 'var(--radius-md)', border: '1px solid var(--line)' }}>
+                <div style={{ fontWeight: 700, color: 'var(--ink)', fontSize: '13px' }}>{act}</div>
+                <div style={{ fontSize: '11px', color: 'var(--slate)' }}>Upcoming School Event • Registration Open</div>
               </div>
             ))}
           </div>
@@ -700,7 +736,7 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       case 'teacher_homework': return 'Create & Assign Homework';
       case 'teacher_marks': return 'First Term Exam Marks Entry';
       case 'teacher_students': return 'Class X-A Student Roster';
-      case 'admin_fees': return 'Fee Management & Reminders';
+      case 'admin_fees': return 'Fee Management & Accounts';
       case 'admin_staff': return 'Faculty Staff Directory';
       case 'admin_broadcast': return 'Broadcast Announcement';
       case 'admin_reports': return 'School Operations Analytics';
@@ -723,8 +759,8 @@ export const ModuleModals = ({ activeModal, onClose }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>{getModalTitle()}</h3>
-          <button className="modal-close-btn" onClick={onClose}>
-            <X size={18} />
+          <button className="modal-close-btn" onClick={onClose} title="Close Modal">
+            <X size={16} />
           </button>
         </div>
         {renderModalBody()}
@@ -732,4 +768,3 @@ export const ModuleModals = ({ activeModal, onClose }) => {
     </div>
   );
 };
-

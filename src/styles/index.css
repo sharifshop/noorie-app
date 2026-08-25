@@ -1,24 +1,48 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+/* ==========================================================================
+   VIDYALAYA UI — DESIGN SYSTEM STYLESHEET
+   v1.0 · School Management Web App
+   Based on design.md
+   ========================================================================== */
 
 :root {
-  --primary-navy: #0f172a;
-  --header-navy: #111d33;
-  --cyan-active: #00b4d8;
-  --cyan-active-bg: #00b4d8;
-  --teal-accent: #0d9488;
-  --bg-app: #f4f6fb;
-  --card-bg: #ffffff;
-  --text-main: #1e293b;
-  --text-muted: #64748b;
-  --border-color: #e2e8f0;
-  --radius-lg: 20px;
-  --radius-md: 14px;
-  --radius-sm: 8px;
-  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -1px rgba(0, 0, 0, 0.03);
-  --shadow-header: 0 4px 12px rgba(15, 23, 42, 0.12);
-  --font-family: 'Outfit', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* 1. Foundations — Color Tokens */
+  --ink: #1E2A4A;
+  --ink-soft: #33456F;
+  --paper: #FAFAF8;
+  --paper-dim: #F0EFEA;
+  --line: #E1DFD6;
+  --marigold: #F5A623;
+  --marigold-dim: #FCE6BC;
+  --leaf: #2F9E5B;
+  --leaf-dim: #DCF2E4;
+  --signal: #D64545;
+  --signal-dim: #FBDFDF;
+  --slate: #6B7280;
+  --slate-light: #9AA1AC;
+
+  /* 2. Foundations — Typography */
+  --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* 3. Radii Scale */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* 4. Elevation / Shadows */
+  --shadow-subtle: 0 1px 3px rgba(30, 42, 74, 0.05);
+  --shadow-card: 0 2px 8px rgba(30, 42, 74, 0.06);
+  --shadow-elevated: 0 8px 24px rgba(30, 42, 74, 0.12);
+  --shadow-header: 0 2px 10px rgba(15, 23, 42, 0.15);
 }
 
+/* ==========================================================================
+   Base & Reset
+   ========================================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -27,27 +51,29 @@
 }
 
 body {
-  font-family: var(--font-family);
-  background-color: #0f172a;
-  color: var(--text-main);
+  font-family: var(--font-body);
+  background-color: #0E1626;
+  color: var(--ink);
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: stretch;
   overflow-x: hidden;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Root App Container */
+/* App Shell Container */
 .mobile-app-root {
   width: 100%;
   max-width: 480px;
   min-height: 100vh;
   margin: 0 auto;
-  background-color: var(--bg-app);
+  background-color: var(--paper);
   display: flex;
   flex-direction: column;
   position: relative;
-  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
   overflow-x: hidden;
 }
 
@@ -65,228 +91,381 @@ body {
   flex-direction: column;
   position: relative;
   scroll-behavior: smooth;
+  padding-bottom: 96px; /* Space for BottomNav */
 }
 
 .screen-container::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
 }
-
 .screen-container::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 4px;
+  background: var(--line);
+  border-radius: var(--radius-xs);
 }
 
-/* ----------------------------------------------------
-   LOGIN SCREEN STYLES (Image 1)
-   ---------------------------------------------------- */
-.login-screen {
-  min-height: 100vh;
-  background: linear-gradient(180deg, #ef4444 0%, #f87171 45%, #fef2f2 75%, #ffffff 100%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 20px 30px 20px;
-  position: relative;
-  justify-content: space-between;
+/* ==========================================================================
+   Typography Utilities
+   ========================================================================== */
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+  color: var(--ink);
+  letter-spacing: -0.02em;
 }
 
-.login-top-bar {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  color: #fff;
-  margin-bottom: 12px;
+.font-mono, .mono-data {
+  font-family: var(--font-mono);
 }
 
-.back-btn {
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  padding: 8px;
+.section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--slate);
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
+  gap: 6px;
 }
 
-.login-header-text {
-  text-align: center;
-  color: #ffffff;
-  margin-bottom: 24px;
-}
-
-.login-header-text h1 {
-  font-size: 2.4rem;
-  font-weight: 800;
-  letter-spacing: -0.5px;
-  margin-bottom: 6px;
-}
-
-.login-header-text p {
-  font-size: 0.95rem;
-  opacity: 0.95;
-  font-weight: 400;
-}
-
-/* Inner White Device Phone Container in Login Image */
-.login-card-container {
-  background: #ffffff;
-  border-radius: 32px;
-  padding: 30px 22px;
-  width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 3px solid #1e293b;
-  position: relative;
-  margin-bottom: 10px;
-}
-
-.school-logo-emblem {
-  width: 90px;
-  height: 100px;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.student-portal-title {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.student-icon-wrapper {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: #e6f4f1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #00bba6;
-  margin-bottom: 6px;
-}
-
-.student-portal-title span {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #334155;
-}
-
-.login-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.input-field-group {
-  position: relative;
-  width: 100%;
-}
-
-.input-field-group .input-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #00bba6;
-}
-
-.input-field-group input {
-  width: 100%;
-  padding: 14px 14px 14px 44px;
-  border: 1.5px solid #00bba6;
-  border-radius: 26px;
-  font-size: 0.95rem;
-  outline: none;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.input-field-group input:focus {
-  border-color: #009688;
-  box-shadow: 0 0 0 3px rgba(0, 187, 166, 0.15);
-}
-
-.password-toggle {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  background: none;
-  border: none;
-  color: #94a3b8;
-  cursor: pointer;
-}
-
-.btn-login {
-  width: 100%;
-  padding: 14px;
-  background: #00bba6;
-  color: #ffffff;
-  border: none;
-  border-radius: 26px;
-  font-size: 1rem;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  display: flex;
+/* ==========================================================================
+   Buttons (design.md spec: Radius 8px, Inter 600, 14px, Padding 10px 18px)
+   ========================================================================== */
+.btn {
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 10px 18px;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  box-shadow: 0 6px 18px rgba(0, 187, 166, 0.35);
-  margin-top: 8px;
-  transition: transform 0.15s ease, background 0.15s ease;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border: 1px solid transparent;
+  outline: none;
+  text-decoration: none;
 }
 
-.btn-login:hover {
-  background: #009688;
-  transform: translateY(-2px);
+.btn-primary {
+  background-color: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+.btn-primary:hover {
+  background-color: var(--ink-soft);
+}
+.btn-primary:active {
+  transform: translateY(1px);
 }
 
-.btn-login:active {
-  transform: translateY(0);
+.btn-marigold {
+  background-color: var(--marigold);
+  color: var(--ink);
+  border-color: var(--marigold);
+}
+.btn-marigold:hover {
+  filter: brightness(1.05);
 }
 
-.login-footer {
-  margin-top: 24px;
-  text-align: center;
-  font-size: 0.75rem;
-  color: #64748b;
-  display: flex;
-  flex-direction: column;
+.btn-secondary {
+  background-color: var(--paper-dim);
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn-secondary:hover {
+  background-color: #e8e6df;
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+.btn-ghost:hover {
+  background-color: var(--paper-dim);
+}
+
+.btn-danger {
+  background-color: var(--signal);
+  color: #ffffff;
+  border-color: var(--signal);
+}
+.btn-danger:hover {
+  filter: brightness(0.95);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   Status Pills (design.md spec: Mono label + colored dot + tinted bg)
+   ========================================================================== */
+.status-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
 }
 
-.brand-tag {
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-pill.present {
+  background-color: var(--leaf-dim);
+  color: #1b683a;
+  border-color: #c4ebd0;
+}
+.status-pill.present .status-dot {
+  background-color: var(--leaf);
+}
+
+.status-pill.absent {
+  background-color: var(--signal-dim);
+  color: #992020;
+  border-color: #f7c5c5;
+}
+.status-pill.absent .status-dot {
+  background-color: var(--signal);
+}
+
+.status-pill.pending, .status-pill.late {
+  background-color: var(--marigold-dim);
+  color: #925907;
+  border-color: #fae0a2;
+}
+.status-pill.pending .status-dot, .status-pill.late .status-dot {
+  background-color: var(--marigold);
+}
+
+.status-pill.holiday {
+  background-color: #E6EAF4;
+  color: var(--ink);
+  border-color: #D3DCED;
+}
+.status-pill.holiday .status-dot {
+  background-color: var(--ink-soft);
+}
+
+.status-pill.not-marked {
+  background-color: var(--paper-dim);
+  color: var(--slate);
+  border-color: var(--line);
+}
+.status-pill.not-marked .status-dot {
+  background-color: var(--slate-light);
+}
+
+/* ==========================================================================
+   Attendance Register Strip (Signature Element from design.md)
+   A grid of small squares, one per school day, color-coded
+   ========================================================================== */
+.register-strip-container {
+  background: var(--paper-dim);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+  margin-bottom: 16px;
+}
+
+.register-strip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.register-strip-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--slate);
+  letter-spacing: 0.06em;
+}
+
+.register-strip-legend {
+  display: flex;
+  gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--slate);
+}
+
+.legend-item {
   display: flex;
   align-items: center;
   gap: 4px;
-  color: #00bba6;
-  font-weight: 700;
-  font-size: 0.85rem;
 }
 
-/* ----------------------------------------------------
-   NAVBAR & HEADER STYLES (Images 2, 3, 4, 5)
-   ---------------------------------------------------- */
-.app-header {
-  background-color: var(--header-navy);
+.register-strip-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 6px;
+}
+
+.register-strip-cell {
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  transition: transform 0.15s ease;
+  position: relative;
+}
+
+.register-strip-cell:hover {
+  transform: scale(1.1);
+  z-index: 2;
+}
+
+.register-strip-cell.p-present {
+  background-color: var(--leaf);
   color: #ffffff;
-  padding: 18px 20px;
+}
+
+.register-strip-cell.p-absent {
+  background-color: var(--signal);
+  color: #ffffff;
+}
+
+.register-strip-cell.p-holiday {
+  background-color: var(--ink-soft);
+  color: #ffffff;
+}
+
+.register-strip-cell.p-not-marked {
+  background-color: var(--paper);
+  border-color: var(--line);
+  color: var(--slate);
+}
+
+/* ==========================================================================
+   Form Fields (design.md spec: Label 12px slate, 10x12px padding, 8px radius)
+   ========================================================================== */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.form-label {
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slate);
+}
+
+.form-input, .form-select, .form-textarea {
+  font-family: var(--font-body);
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  background-color: var(--paper);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  width: 100%;
+}
+
+.form-input:focus, .form-select:focus, .form-textarea:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px rgba(30, 42, 74, 0.1);
+}
+
+.form-input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.form-input-with-icon .input-icon {
+  position: absolute;
+  left: 12px;
+  color: var(--slate);
+  pointer-events: none;
+}
+
+.form-input-with-icon .form-input {
+  padding-left: 38px;
+}
+
+/* ==========================================================================
+   Data Table (design.md spec: Header mono 11px, body rows 13px with 10px pad)
+   ========================================================================== */
+.register-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-body);
+}
+
+.register-table th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--slate);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.register-table td {
+  font-size: 13px;
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  vertical-align: middle;
+}
+
+.register-table tr:last-child td {
+  border-bottom: none;
+}
+
+.register-table td.roll-cell {
+  font-family: var(--font-mono);
+  color: var(--slate);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Header Component (Fixed Ink Navy Shell)
+   ========================================================================== */
+.app-header {
+  background-color: var(--ink);
+  color: #ffffff;
+  padding: 16px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: var(--shadow-header);
-}
-
-.app-header.teal-bg {
-  background-color: #00a896;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .header-user-info {
@@ -295,182 +474,494 @@ body {
   gap: 12px;
 }
 
-.header-logo-badge {
-  width: 44px;
-  height: 44px;
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 2px;
+.header-brand-badge {
+  width: 38px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: var(--marigold);
+  font-weight: 700;
 }
 
-.header-logo-badge img,
-.header-logo-badge svg {
-  width: 100%;
-  height: 100%;
+.header-brand-badge img {
+  width: 24px;
+  height: 24px;
 }
 
-.header-text-titles h2 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #ff3b5c;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+.header-titles-col {
+  display: flex;
+  flex-direction: column;
 }
 
-.header-text-titles p {
-  font-size: 0.88rem;
-  color: #e2e8f0;
-}
-
-.header-text-titles p span {
+.header-app-name {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
   font-weight: 700;
   color: #ffffff;
-}
-
-.notification-bell-btn {
-  position: relative;
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #fca5a5;
-  cursor: pointer;
+  gap: 8px;
+  letter-spacing: -0.01em;
 }
 
-.notification-badge-dot {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  background: #ef4444;
-  color: #fff;
-  font-size: 0.68rem;
-  font-weight: 700;
-  width: 16px;
-  height: 16px;
+.header-role-dot {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
+  display: inline-block;
+}
+
+.header-role-dot.role-student { background-color: var(--leaf); }
+.header-role-dot.role-teacher { background-color: var(--marigold); }
+.header-role-dot.role-admin { background-color: var(--signal); }
+
+.header-user-greeting {
+  font-size: 12px;
+  color: var(--slate-light);
+}
+
+.header-user-greeting span {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid var(--header-navy);
+  cursor: pointer;
+  position: relative;
+  transition: background 0.15s ease;
 }
 
-/* Secondary Screen Header */
-.screen-nav-header {
-  background-color: var(--header-navy);
+.header-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.header-badge-count {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: var(--signal);
   color: #ffffff;
-  padding: 18px 18px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  border: 2px solid var(--ink);
+}
+
+/* Secondary Navigation Header */
+.screen-nav-header {
+  background-color: var(--ink);
+  color: #ffffff;
+  padding: 14px 18px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
-.screen-nav-header.teal-theme {
-  background-color: #00b4d8;
+.screen-nav-header .back-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 }
 
-.screen-nav-title {
-  font-size: 1.18rem;
-  font-weight: 800;
-  letter-spacing: 0.6px;
-  text-transform: uppercase;
-  width: 100%;
+.screen-nav-header .screen-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.01em;
   text-align: center;
-  margin-right: 28px;
-}
-
-/* ----------------------------------------------------
-   HOME DASHBOARD STYLES (Image 2)
-   ---------------------------------------------------- */
-.home-screen-content {
-  padding: 20px 16px;
   flex: 1;
 }
 
-.section-title {
-  font-size: 1.2rem;
-  font-weight: 800;
-  color: #1e293b;
-  margin-bottom: 18px;
+/* ==========================================================================
+   Bottom Navigation (Ink Navy Shell Pattern)
+   ========================================================================== */
+.bottom-nav {
+  width: 100%;
+  max-width: 480px;
+  background-color: var(--ink);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 12px;
+  z-index: 100;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.15);
 }
 
+.nav-item {
+  background: none;
+  border: none;
+  color: var(--slate-light);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 6px 14px;
+  border-radius: var(--radius-md);
+  transition: all 0.15s ease;
+}
+
+.nav-item.active {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-item.active .nav-icon {
+  color: var(--marigold);
+}
+
+.nav-item:hover {
+  color: #ffffff;
+}
+
+/* ==========================================================================
+   LOGIN SCREEN (Redesigned with Vidyalaya UI)
+   ========================================================================== */
+.login-screen-wrapper {
+  min-height: 100vh;
+  background-color: var(--paper);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 24px 20px;
+}
+
+.login-brand-header {
+  background-color: var(--ink);
+  color: #ffffff;
+  padding: 24px 20px;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  border: 1px solid var(--ink-soft);
+  margin-bottom: 20px;
+}
+
+.login-brand-header h1 {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.02em;
+}
+
+.login-brand-header p {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--slate-light);
+  margin-top: 4px;
+}
+
+.login-card {
+  background-color: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px 20px;
+  box-shadow: var(--shadow-card);
+}
+
+/* Role Selector Tabs */
+.role-tabs-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background-color: var(--paper-dim);
+  padding: 4px;
+  border-radius: var(--radius-md);
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+}
+
+.role-tab-btn {
+  background: none;
+  border: none;
+  padding: 8px 4px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.15s ease;
+}
+
+.role-tab-btn.active {
+  background-color: var(--ink);
+  color: #ffffff;
+  box-shadow: var(--shadow-subtle);
+}
+
+.role-tab-btn.active.role-student { background-color: var(--ink); }
+.role-tab-btn.active.role-teacher { background-color: var(--ink); }
+.role-tab-btn.active.role-admin { background-color: var(--ink); }
+
+.role-tag-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  border-radius: var(--radius-md);
+  background: var(--paper-dim);
+  border: 1px solid var(--line);
+}
+
+.role-tag-indicator .role-icon-box {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-xs);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-tag-indicator span {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* One-Click Fast Demo */
+.fast-demo-box {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px dashed var(--line);
+}
+
+.fast-demo-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--slate);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.fast-demo-pills {
+  display: flex;
+  gap: 8px;
+}
+
+.demo-pill-btn {
+  flex: 1;
+  background-color: var(--paper-dim);
+  border: 1px solid var(--line);
+  padding: 6px 8px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s ease;
+}
+
+.demo-pill-btn:hover {
+  background-color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* ==========================================================================
+   STAT CARDS & KPI GRIDS (Dashboard Shell Pattern)
+   ========================================================================== */
+.stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.stat-cards-grid.four-col {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.stat-box {
+  background-color: var(--paper-dim);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 14px 12px;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-box-value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  margin-bottom: 4px;
+}
+
+.stat-box-value.leaf { color: var(--leaf); }
+.stat-box-value.marigold { color: var(--marigold); }
+.stat-box-value.signal { color: var(--signal); }
+
+.stat-box-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--slate);
+  letter-spacing: 0.04em;
+}
+
+/* Banner Card */
+.summary-banner-card {
+  background-color: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 18px 16px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-subtle);
+}
+
+.banner-role-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: var(--radius-full);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.banner-role-pill.role-student { background: var(--leaf-dim); color: #1b683a; }
+.banner-role-pill.role-teacher { background: var(--marigold-dim); color: #925907; }
+.banner-role-pill.role-admin { background: var(--signal-dim); color: #992020; }
+
+.summary-banner-card h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.summary-banner-card p {
+  font-size: 13px;
+  color: var(--slate);
+  margin-bottom: 14px;
+}
+
+/* ==========================================================================
+   MODULES GRID (Quick Access Cards)
+   ========================================================================== */
 .modules-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
+  gap: 10px;
+  margin-bottom: 16px;
 }
 
 .module-card {
   background: #ffffff;
   border-radius: var(--radius-lg);
-  padding: 18px 8px 16px 8px;
+  padding: 16px 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
-  box-shadow: var(--shadow-card);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-subtle);
   cursor: pointer;
   position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .module-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+  border-color: var(--ink-soft);
 }
 
 .module-card:active {
-  transform: scale(0.96);
+  transform: scale(0.97);
 }
 
 .module-icon-box {
-  width: 54px;
-  height: 54px;
-  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   position: relative;
+  background-color: var(--paper-dim);
+  border: 1px solid var(--line);
+  color: var(--ink);
 }
 
 .module-card-badge {
   position: absolute;
-  top: -2px;
-  right: -2px;
-  background: #ef4444;
+  top: -4px;
+  right: -4px;
+  background: var(--signal);
   color: #ffffff;
-  font-size: 0.72rem;
-  font-weight: 800;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #ffffff;
-  box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid #ffffff;
 }
 
 .module-card-title {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink);
   line-height: 1.2;
 }
 
-/* ----------------------------------------------------
-   ATTENDANCE REPORT STYLES (Image 3)
-   ---------------------------------------------------- */
+/* ==========================================================================
+   ATTENDANCE SCREEN
+   ========================================================================== */
 .attendance-content {
   padding: 16px;
   flex: 1;
@@ -478,9 +969,9 @@ body {
 
 .period-scroll-pills {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding-bottom: 12px;
+  padding-bottom: 8px;
   margin-bottom: 12px;
 }
 
@@ -488,334 +979,186 @@ body {
   display: none;
 }
 
-.month-label {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #475569;
-  margin-bottom: 8px;
-}
-
 .period-pill {
-  padding: 8px 18px;
-  border-radius: 20px;
-  background: #e2e8f0;
-  color: #475569;
-  font-size: 0.88rem;
-  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background-color: var(--paper-dim);
+  color: var(--slate);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
   white-space: nowrap;
-  border: none;
+  border: 1px solid var(--line);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 .period-pill.active {
-  background: var(--cyan-active);
+  background-color: var(--ink);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
+  border-color: var(--ink);
 }
 
-/* Monthly Performance Summary Card */
-.performance-card {
-  background: #ffffff;
-  border-radius: var(--radius-lg);
-  padding: 18px 16px;
-  box-shadow: var(--shadow-card);
-  margin-bottom: 16px;
-  border: 1px solid #f1f5f9;
-}
-
-.performance-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 16px;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 10px;
-}
-
-.performance-header h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.performance-header span {
-  font-size: 0.78rem;
-  color: #64748b;
-  font-weight: 500;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  text-align: center;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-}
-
-.stat-item:not(:last-child)::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  top: 15%;
-  height: 70%;
-  width: 1px;
-  background: #e2e8f0;
-}
-
-.stat-number {
-  font-size: 1.7rem;
-  font-weight: 800;
-  line-height: 1;
-  margin-bottom: 4px;
-}
-
-.stat-number.green {
-  color: #10b981;
-}
-
-.stat-number.red {
-  color: #ef4444;
-}
-
-.stat-number.orange {
-  color: #f59e0b;
-}
-
-.stat-label {
-  font-size: 0.82rem;
-  color: #64748b;
-  font-weight: 600;
-}
-
-/* Daily List */
 .daily-attendance-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 }
 
 .daily-row {
   background: #ffffff;
   border-radius: var(--radius-md);
-  padding: 14px 16px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: var(--shadow-card);
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-subtle);
 }
 
 .daily-date-info {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
-.calendar-icon-box {
-  color: #8b5cf6;
+.daily-date-info .date-icon {
+  color: var(--slate);
 }
 
 .daily-date-text {
-  font-size: 0.98rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink);
 }
 
-.status-badge {
-  padding: 6px 14px;
-  border-radius: 16px;
-  font-size: 0.82rem;
-  font-weight: 700;
-}
-
-.status-badge.not-marked {
-  background: #f1f5f9;
-  color: #475569;
-}
-
-.status-badge.holiday {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.status-badge.present {
-  background: #d1fae5;
-  color: #059669;
-}
-
-.status-badge.absent {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-/* ----------------------------------------------------
-   HOME WORK STYLES (Image 4)
-   ---------------------------------------------------- */
+/* ==========================================================================
+   HOMEWORK SCREEN
+   ========================================================================== */
 .homework-content {
   padding: 16px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.search-filter-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.homework-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.homework-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subject-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: var(--radius-xs);
+  background-color: var(--paper-dim);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+
+.homework-date-text {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--slate);
+}
+
+.homework-title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.homework-desc {
+  font-size: 13px;
+  color: var(--slate);
+  line-height: 1.45;
+}
+
+.homework-footer {
+  border-top: 1px solid var(--line);
+  padding-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--slate);
+}
+
+/* ==========================================================================
+   PROFILE SCREEN
+   ========================================================================== */
+.profile-content {
+  padding: 16px 16px 110px 16px;
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.homework-card {
+.profile-card {
   background: #ffffff;
   border-radius: var(--radius-lg);
-  padding: 18px 16px;
-  box-shadow: var(--shadow-card);
-  border: 1px solid #f1f5f9;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.homework-tags-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.tags-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.subject-pill {
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 0.82rem;
-  font-weight: 800;
-}
-
-.type-pill {
-  padding: 4px 12px;
-  border-radius: 12px;
-  background: #f1f5f9;
-  color: #475569;
-  font-size: 0.8rem;
-  font-weight: 600;
-}
-
-.homework-date {
-  font-size: 0.82rem;
-  color: #94a3b8;
-  font-weight: 600;
-}
-
-.homework-title {
-  font-size: 1.15rem;
-  font-weight: 800;
-  color: #0f172a;
-}
-
-.homework-desc {
-  font-size: 0.9rem;
-  color: #475569;
-  line-height: 1.45;
-}
-
-.homework-teacher-footer {
-  border-top: 1px dashed #e2e8f0;
-  padding-top: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.82rem;
-  color: #64748b;
-  font-weight: 600;
-}
-
-.teacher-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.teacher-avatar-icon {
-  font-size: 1rem;
-}
-
-/* ----------------------------------------------------
-   USER PROFILE STYLES (Image 5)
-   ---------------------------------------------------- */
-.profile-content {
-  padding: 16px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.profile-avatar-card {
-  background: #ffffff;
-  border-radius: var(--radius-lg);
-  padding: 24px 16px;
+  padding: 20px 16px;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  box-shadow: var(--shadow-card);
-  border: 1px solid #f1f5f9;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-subtle);
   position: relative;
 }
 
-.profile-card-download-btn {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  background: #e0f2fe;
-  color: #0284c7;
-  border: none;
-  width: 32px;
-  height: 32px;
+.avatar-initials-circle {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
+  background-color: var(--paper-dim);
+  border: 2px solid var(--line);
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 180, 216, 0.2);
-  transition: all 0.2s ease;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
 }
 
-.profile-card-download-btn:hover {
-  background: #0284c7;
-  color: #ffffff;
-  transform: scale(1.08);
-}
-
-.avatar-circle-wrapper {
-  width: 84px;
-  height: 84px;
-  border-radius: 50%;
-  background: #e0f2fe;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.6rem;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.15);
-}
-
-.student-name-title {
-  font-size: 1.4rem;
-  font-weight: 800;
-  color: #0f172a;
+.profile-name-title {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ink);
   margin-bottom: 2px;
 }
 
-.student-portal-sub {
-  font-size: 0.9rem;
-  color: #0d9488;
-  font-weight: 700;
-  margin-bottom: 10px;
+.profile-portal-sub {
+  font-size: 12px;
+  color: var(--slate);
+  margin-bottom: 8px;
 }
 
 .id-badge-row {
@@ -824,747 +1167,108 @@ body {
   gap: 8px;
 }
 
-.id-badge-pill {
-  background: #f1f5f9;
-  color: #64748b;
-  padding: 4px 14px;
-  border-radius: 14px;
-  font-size: 0.82rem;
-  font-weight: 700;
+.id-pill {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--paper-dim);
+  border: 1px solid var(--line);
+  color: var(--ink);
 }
 
-.download-icon-pill {
-  background: linear-gradient(135deg, #00b4d8 0%, #0d9488 100%);
-  color: #ffffff;
-  border: none;
-  padding: 4px 10px;
-  border-radius: 14px;
-  font-size: 0.76rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 180, 216, 0.3);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.download-icon-pill:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(0, 180, 216, 0.4);
-}
-
-.account-details-card {
+.details-card {
   background: #ffffff;
   border-radius: var(--radius-lg);
-  padding: 20px 18px;
-  box-shadow: var(--shadow-card);
-  border: 1px solid #f1f5f9;
+  padding: 18px 16px;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-subtle);
 }
 
-.account-details-card h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 14px;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 10px;
-}
-
-.details-table {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.detail-row {
+.detail-row-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.88rem;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
 }
 
-.detail-label {
-  color: #64748b;
-  font-weight: 500;
+.detail-row-item:last-child {
+  border-bottom: none;
 }
 
-.detail-value {
-  color: #0f172a;
-  font-weight: 700;
+.detail-label-text {
+  color: var(--slate);
+  font-size: 12px;
+}
+
+.detail-value-text {
+  font-weight: 600;
+  color: var(--ink);
   text-align: right;
 }
 
-.logout-btn {
-  width: 100%;
-  padding: 12px;
-  background: #fee2e2;
-  color: #dc2626;
-  border: 1px solid #fca5a5;
-  border-radius: var(--radius-md);
-  font-weight: 700;
-  font-size: 0.92rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.2s ease;
-  margin-top: 14px;
-}
-
-.logout-btn:hover {
-  background: #fecaca;
-}
-
-/* ----------------------------------------------------
-   BOTTOM NAVIGATION BAR STYLES
-   ---------------------------------------------------- */
-.bottom-nav {
-  height: 64px;
-  background-color: var(--header-navy);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: center;
-  flex-shrink: 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  max-width: 480px;
-}
-
-.nav-item {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  color: #94a3b8;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.78rem;
-  font-weight: 600;
-  font-family: inherit;
-}
-
-.nav-item.active {
-  background-color: var(--cyan-active);
-  color: #ffffff;
-}
-
-.nav-item.active .nav-icon {
-  color: #ffffff;
-}
-
-/* ----------------------------------------------------
-   MODAL DRAWER STYLES
-   ---------------------------------------------------- */
+/* ==========================================================================
+   MODALS (Vidyalaya Register / Sheet Design)
+   ========================================================================== */
 .modal-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 23, 42, 0.6);
+  inset: 0;
+  background-color: rgba(14, 22, 38, 0.65);
   backdrop-filter: blur(4px);
-  z-index: 100;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  animation: fadeIn 0.2s ease;
+  z-index: 1000;
+  padding: 16px;
 }
 
 .modal-content {
-  background: #ffffff;
+  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--line);
   width: 100%;
-  max-width: 480px;
-  max-height: 85vh;
-  border-top-left-radius: 28px;
-  border-top-right-radius: 28px;
-  padding: 20px 18px 30px 18px;
+  max-width: 440px;
+  max-height: 88vh;
   overflow-y: auto;
-  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.25);
-  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  flex-direction: column;
+  padding: 20px;
+  box-shadow: var(--shadow-elevated);
 }
 
 .modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #f1f5f9;
-  padding-bottom: 14px;
+  align-items: center;
   margin-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 12px;
 }
 
 .modal-header h3 {
+  font-family: var(--font-display);
   font-size: 1.15rem;
-  font-weight: 800;
-  color: #0f172a;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  font-weight: 700;
+  color: var(--ink);
 }
 
 .modal-close-btn {
-  background: #f1f5f9;
-  border: none;
+  background: var(--paper-dim);
+  border: 1px solid var(--line);
+  color: var(--slate);
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #64748b;
   cursor: pointer;
+  transition: all 0.15s ease;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideUp {
-  from {
-    transform: translateY(100%);
-  }
-
-  to {
-    transform: translateY(0);
-  }
-}
-
-/* ----------------------------------------------------
-   MULTI-ROLE LOGIN & THEMES STYLES
-   ---------------------------------------------------- */
-
-.role-theme-teacher {
-  background: linear-gradient(180deg, #0d9488 0%, #14b8a6 45%, #f0fdf4 75%, #ffffff 100%) !important;
-}
-
-.role-theme-admin {
-  background: linear-gradient(180deg, #312e81 0%, #4338ca 45%, #eef2ff 75%, #ffffff 100%) !important;
-}
-
-.role-selector-tabs {
-  display: flex;
-  background: #f1f5f9;
-  padding: 4px;
-  border-radius: 14px;
-  width: 100%;
-  margin-bottom: 18px;
-  gap: 4px;
-}
-
-.role-tab {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  border: none;
-  background: transparent;
-  color: #64748b;
-  font-weight: 700;
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.role-tab.active {
-  background: #ffffff;
-  color: #0f172a;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.role-bg-teacher {
-  background-color: #0d9488 !important;
-}
-
-.role-bg-admin {
-  background-color: #4338ca !important;
-}
-
-.btn-teacher {
-  background-color: #0d9488 !important;
-}
-
-.btn-admin {
-  background-color: #4338ca !important;
-}
-
-.quick-demo-section {
-  width: 100%;
-  margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px dashed #cbd5e1;
-  text-align: center;
-}
-
-.quick-demo-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: block;
-  margin-bottom: 8px;
-}
-
-.quick-demo-buttons {
-  display: flex;
-  gap: 6px;
-  justify-content: center;
-}
-
-.demo-pill {
-  border: none;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: transform 0.15s ease;
-}
-
-.demo-pill:hover {
-  transform: translateY(-1px);
-}
-
-.student-pill {
-  background: #fee2e2;
-  color: #b91c1c;
-}
-
-.teacher-pill {
-  background: #ccfbf1;
-  color: #0f766e;
-}
-
-.admin-pill {
-  background: #e0e7ff;
-  color: #3730a3;
-}
-
-/* Header Role Badges */
-.header-title-role-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.header-role-badge {
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 2px 8px;
-  border-radius: 10px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.role-badge-student {
-  background: rgba(0, 180, 216, 0.2);
-  color: #00b4d8;
-  border: 1px solid rgba(0, 180, 216, 0.4);
-}
-
-.role-badge-teacher {
-  background: rgba(13, 148, 136, 0.25);
-  color: #2dd4bf;
-  border: 1px solid rgba(45, 212, 191, 0.4);
-}
-
-.role-badge-admin {
-  background: rgba(168, 85, 247, 0.25);
-  color: #c084fc;
-  border: 1px solid rgba(192, 132, 252, 0.4);
-}
-
-/* ----------------------------------------------------
-   TEACHER DASHBOARD STYLES
-   ---------------------------------------------------- */
-.teacher-home-container, .admin-home-container {
-  padding: 16px;
-}
-
-.teacher-summary-banner {
-  background: linear-gradient(135deg, #0d9488 0%, #115e59 100%);
+.modal-close-btn:hover {
+  background-color: var(--ink);
   color: #ffffff;
-  border-radius: 20px;
-  padding: 18px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px -4px rgba(13, 148, 136, 0.3);
-}
-
-.teacher-badge-pill, .admin-badge-pill {
-  display: inline-block;
-  background: rgba(255, 255, 255, 0.18);
-  backdrop-filter: blur(4px);
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-}
-
-.teacher-summary-banner h3, .admin-summary-banner h3 {
-  font-size: 1.3rem;
-  font-weight: 800;
-  margin-bottom: 2px;
-}
-
-.teacher-summary-banner p, .admin-summary-banner p {
-  font-size: 0.8rem;
-  opacity: 0.9;
-  margin-bottom: 14px;
-}
-
-.teacher-kpi-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 12px 8px;
-}
-
-.kpi-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.kpi-value {
-  font-size: 1.25rem;
-  font-weight: 800;
-}
-
-.kpi-value.highlight {
-  color: #fef08a;
-}
-
-.kpi-label {
-  font-size: 0.68rem;
-  opacity: 0.85;
-}
-
-.kpi-divider {
-  width: 1px;
-  height: 24px;
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.teacher-schedule-card, .admin-alerts-card {
-  background: #ffffff;
-  border-radius: 18px;
-  padding: 16px;
-  margin-top: 20px;
-  box-shadow: var(--shadow-card);
-  border: 1px solid var(--border-color);
-}
-
-.card-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.card-header-flex h4 {
-  font-size: 0.92rem;
-  font-weight: 800;
-  color: #0f172a;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.schedule-date {
-  font-size: 0.75rem;
-  background: #f1f5f9;
-  color: #475569;
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-weight: 700;
-}
-
-.schedule-timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.schedule-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: #f8fafc;
-  border-left: 3px solid #cbd5e1;
-}
-
-.schedule-item.active {
-  background: #f0fdf4;
-  border-left-color: #16a34a;
-}
-
-.period-time {
-  font-size: 0.72rem;
-  font-weight: 700;
-  color: #64748b;
-  width: 110px;
-}
-
-.period-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.period-details strong {
-  font-size: 0.82rem;
-  color: #0f172a;
-}
-
-.period-details span {
-  font-size: 0.72rem;
-  color: #64748b;
-}
-
-.status-tag {
-  font-size: 0.68rem;
-  padding: 2px 6px;
-  border-radius: 6px;
-  font-weight: 700;
-}
-
-.status-tag.ongoing {
-  background: #dcfce7;
-  color: #15803d;
-}
-
-.status-tag.upcoming {
-  background: #e2e8f0;
-  color: #475569;
-}
-
-/* ----------------------------------------------------
-   ADMIN DASHBOARD STYLES
-   ---------------------------------------------------- */
-.admin-summary-banner {
-  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);
-  color: #ffffff;
-  border-radius: 20px;
-  padding: 18px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 24px -4px rgba(49, 46, 129, 0.4);
-}
-
-.admin-kpi-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
-}
-
-.admin-stat-card {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-}
-
-.stat-icon-wrapper {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.student-stat-bg { background: #38bdf8; color: #0c4a6e; }
-.teacher-stat-bg { background: #818cf8; color: #1e1b4b; }
-.attendance-stat-bg { background: #4ade80; color: #052e16; }
-.fee-stat-bg { background: #fbbf24; color: #451a03; }
-
-.stat-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.stat-value {
-  font-size: 0.95rem;
-  font-weight: 800;
-  color: #ffffff;
-}
-
-.stat-label {
-  font-size: 0.65rem;
-  opacity: 0.8;
-}
-
-.fee-progress-section {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 12px;
-  padding: 10px 12px;
-}
-
-.fee-progress-header {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.72rem;
-  margin-bottom: 6px;
-  opacity: 0.9;
-}
-
-.progress-bar-track {
-  width: 100%;
-  height: 8px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.progress-bar-fill {
-  height: 100%;
-  background: #10b981;
-  border-radius: 4px;
-  transition: width 0.4s ease;
-}
-
-.alerts-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.alerts-list li {
-  display: flex;
-  align-items: flex-start;
-  gap: 8px;
-  font-size: 0.78rem;
-  color: #334155;
-  line-height: 1.3;
-}
-
-.alert-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
-.alert-dot.red { background: #ef4444; }
-.alert-dot.yellow { background: #f59e0b; }
-.alert-dot.green { background: #10b981; }
-
-.bottom-nav-teacher .nav-item.active {
-  background-color: #0d9488 !important;
-}
-
-.bottom-nav-admin .nav-item.active {
-  background-color: #4338ca !important;
-}
-
-/* ----------------------------------------------------
-   PROFILE APP DOWNLOAD CARD STYLES
-   ---------------------------------------------------- */
-.profile-app-download-card {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #ffffff;
-  border-radius: 20px;
-  padding: 16px;
-  margin: 16px 0;
-  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.app-download-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 14px;
-}
-
-.app-download-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #00b4d8 0%, #0d9488 100%);
-  color: #ffffff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 180, 216, 0.3);
-}
-
-.app-download-info h4 {
-  font-size: 0.95rem;
-  font-weight: 800;
-  margin-bottom: 2px;
-  color: #ffffff;
-}
-
-.app-download-info p {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  line-height: 1.3;
-}
-
-.install-toast-msg {
-  background: rgba(34, 197, 94, 0.15);
-  color: #4ade80;
-  border: 1px solid rgba(74, 222, 128, 0.3);
-  padding: 8px 12px;
-  border-radius: 10px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-profile-download {
-  width: 100%;
-  background: linear-gradient(135deg, #00b4d8 0%, #0284c7 100%);
-  color: #ffffff;
-  border: none;
-  padding: 12px;
-  border-radius: 14px;
-  font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 0.5px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 14px rgba(0, 180, 216, 0.35);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-
-.btn-profile-download:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(0, 180, 216, 0.45);
+  border-color: var(--ink);
 }

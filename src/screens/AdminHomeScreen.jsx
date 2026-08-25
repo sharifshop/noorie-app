@@ -7,10 +7,7 @@ import {
   Layers, 
   Calendar, 
   Building,
-  TrendingUp,
-  AlertCircle,
-  Users,
-  CheckCircle2
+  AlertCircle
 } from 'lucide-react';
 import { adminProfile, adminQuickModules, adminStats } from '../data/dummyData';
 
@@ -25,91 +22,69 @@ const iconMap = {
 
 export const AdminHomeScreen = ({ onNavigate, onOpenModal }) => {
   return (
-    <div className="admin-home-container">
-      {/* Admin Executive KPI Banner */}
-      <div className="admin-summary-banner">
-        <div className="admin-badge-pill">
-          <span>🏛️ Executive Admin Portal</span>
+    <div className="admin-home-content" style={{ padding: '16px', flex: 1 }}>
+      {/* Executive KPI Banner Card */}
+      <div className="summary-banner-card">
+        <div className="banner-role-pill role-admin">
+          <span className="status-dot" style={{ backgroundColor: 'var(--signal)' }}></span>
+          <span>{adminProfile.adminId} · {adminProfile.accessLevel}</span>
         </div>
         <h3>{adminProfile.name}</h3>
         <p>{adminProfile.designation} • {adminProfile.school}</p>
 
-        {/* School Overview Cards */}
-        <div className="admin-kpi-grid">
-          <div className="admin-stat-card">
-            <div className="stat-icon-wrapper student-stat-bg">
-              <Users size={20} />
-            </div>
-            <div className="stat-info">
-              <span className="stat-value">{adminStats.totalStudents}</span>
-              <span className="stat-label">Total Students</span>
-            </div>
+        {/* 4-up KPI Stat Grid */}
+        <div className="stat-cards-grid four-col">
+          <div className="stat-box" onClick={() => onOpenModal('teacher_students')} style={{ cursor: 'pointer' }}>
+            <span className="stat-box-value font-mono">{adminStats.totalStudents}</span>
+            <span className="stat-box-label">STUDENTS</span>
           </div>
 
-          <div className="admin-stat-card">
-            <div className="stat-icon-wrapper teacher-stat-bg">
-              <UserCheck size={20} />
-            </div>
-            <div className="stat-info">
-              <span className="stat-value">{adminStats.totalTeachers}</span>
-              <span className="stat-label">Faculty Staff</span>
-            </div>
+          <div className="stat-box" onClick={() => onOpenModal('admin_staff')} style={{ cursor: 'pointer' }}>
+            <span className="stat-box-value font-mono">{adminStats.totalTeachers}</span>
+            <span className="stat-box-label">FACULTY</span>
           </div>
 
-          <div className="admin-stat-card">
-            <div className="stat-icon-wrapper attendance-stat-bg">
-              <CheckCircle2 size={20} />
-            </div>
-            <div className="stat-info">
-              <span className="stat-value">{adminStats.todayAttendanceRate}</span>
-              <span className="stat-label">Today's Attendance</span>
-            </div>
+          <div className="stat-box">
+            <span className="stat-box-value leaf font-mono">{adminStats.todayAttendanceRate}</span>
+            <span className="stat-box-label">ATTENDANCE</span>
           </div>
 
-          <div className="admin-stat-card">
-            <div className="stat-icon-wrapper fee-stat-bg">
-              <TrendingUp size={20} />
-            </div>
-            <div className="stat-info">
-              <span className="stat-value">{adminStats.totalFeeCollected}</span>
-              <span className="stat-label">Fee Collected</span>
-            </div>
+          <div className="stat-box" onClick={() => onOpenModal('admin_fees')} style={{ cursor: 'pointer' }}>
+            <span className="stat-box-value marigold font-mono">{adminStats.totalFeeCollected}</span>
+            <span className="stat-box-label">COLLECTED</span>
           </div>
         </div>
 
         {/* Fee Collection Meter */}
-        <div className="fee-progress-section">
-          <div className="fee-progress-header">
-            <span>Annual Fee Collection Progress</span>
-            <span className="fee-perc">{adminStats.feeCollectionPercentage}% ({adminStats.totalFeeCollected} / {adminStats.totalFeeExpected})</span>
+        <div style={{ marginTop: '10px', paddingTop: '12px', borderTop: '1px solid var(--line)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--slate)', marginBottom: '6px' }}>
+            <span>FEE COLLECTION TARGET</span>
+            <span style={{ fontWeight: 600, color: 'var(--ink)' }}>{adminStats.feeCollectionPercentage}% ({adminStats.totalFeeCollected} / {adminStats.totalFeeExpected})</span>
           </div>
-          <div className="progress-bar-track">
-            <div 
-              className="progress-bar-fill" 
-              style={{ width: `${adminStats.feeCollectionPercentage}%` }}
-            ></div>
+          <div style={{ width: '100%', height: '8px', background: 'var(--paper-dim)', borderRadius: 'var(--radius-full)', overflow: 'hidden', border: '1px solid var(--line)' }}>
+            <div style={{ width: `${adminStats.feeCollectionPercentage}%`, height: '100%', background: 'var(--marigold)', borderRadius: 'var(--radius-full)' }}></div>
           </div>
         </div>
       </div>
 
       {/* Admin Modules Grid */}
-      <h2 className="section-title">School Management Controls</h2>
+      <div className="section-label">
+        <span>SCHOOL MANAGEMENT CONTROLS</span>
+      </div>
+
       <div className="modules-grid">
         {adminQuickModules.map((module) => {
           const IconComp = iconMap[module.icon] || Building;
           return (
             <div 
               key={module.id} 
-              className="module-card admin-card-hover"
+              className="module-card"
               onClick={() => onOpenModal(module.modal)}
             >
-              <div 
-                className="module-icon-box"
-                style={{ backgroundColor: module.bg, color: module.iconColor }}
-              >
-                <IconComp size={24} />
+              <div className="module-icon-box">
+                <IconComp size={20} />
                 {module.badge && (
-                  <span className="module-card-badge" style={{ backgroundColor: module.iconColor }}>
+                  <span className="module-card-badge">
                     {module.badge}
                   </span>
                 )}
@@ -120,29 +95,37 @@ export const AdminHomeScreen = ({ onNavigate, onOpenModal }) => {
         })}
       </div>
 
-      {/* Admin Quick Alerts & Notifications */}
-      <div className="admin-alerts-card">
-        <h4><AlertCircle size={18} /> Operational Alerts</h4>
-        <ul className="alerts-list">
-          <li>
-            <span className="alert-dot red"></span>
+      {/* Operational Alerts Card */}
+      <div className="section-label">
+        <span>OPERATIONAL ALERTS</span>
+      </div>
+
+      <div className="details-card">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '13px' }}>
+            <span className="status-dot" style={{ backgroundColor: 'var(--signal)', marginTop: '6px' }}></span>
             <div>
-              <strong>Class 10-A Fee Overdue:</strong> 3 students have pending 1st Term fees.
+              <strong style={{ color: 'var(--ink)' }}>Class 10-A Fee Overdue:</strong>
+              <span style={{ color: 'var(--slate)', display: 'block', fontSize: '12px' }}>3 students have pending 1st Term fees.</span>
             </div>
-          </li>
-          <li>
-            <span className="alert-dot yellow"></span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '13px' }}>
+            <span className="status-dot" style={{ backgroundColor: 'var(--marigold)', marginTop: '6px' }}></span>
             <div>
-              <strong>Teacher Leave Notice:</strong> Mr. V. P. Sharma is on leave today. Substitute assigned.
+              <strong style={{ color: 'var(--ink)' }}>Teacher Leave Notice:</strong>
+              <span style={{ color: 'var(--slate)', display: 'block', fontSize: '12px' }}>Mr. V. P. Sharma is on leave today. Substitute assigned.</span>
             </div>
-          </li>
-          <li>
-            <span className="alert-dot green"></span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start', fontSize: '13px' }}>
+            <span className="status-dot" style={{ backgroundColor: 'var(--leaf)', marginTop: '6px' }}></span>
             <div>
-              <strong>Sports Day Registrations:</strong> 128 student registrations received.
+              <strong style={{ color: 'var(--ink)' }}>Sports Day Registrations:</strong>
+              <span style={{ color: 'var(--slate)', display: 'block', fontSize: '12px' }}>128 student registrations received.</span>
             </div>
-          </li>
-        </ul>
+          </div>
+        </div>
       </div>
     </div>
   );

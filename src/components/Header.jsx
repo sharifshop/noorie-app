@@ -10,67 +10,68 @@ export const Header = ({ currentTab, userRole = 'student', onNavigate, onOpenMod
   };
 
   const getRoleBadge = () => {
-    if (userRole === 'teacher') return { label: 'Teacher', badgeClass: 'role-badge-teacher' };
-    if (userRole === 'admin') return { label: 'Admin', badgeClass: 'role-badge-admin' };
-    return { label: 'Student', badgeClass: 'role-badge-student' };
+    if (userRole === 'teacher') return { label: 'Faculty', dotClass: 'role-teacher', accent: 'var(--marigold)' };
+    if (userRole === 'admin') return { label: 'Admin', dotClass: 'role-admin', accent: 'var(--signal)' };
+    return { label: 'Student', dotClass: 'role-student', accent: 'var(--leaf)' };
   };
 
   const roleInfo = getRoleBadge();
 
   if (currentTab === 'home') {
     return (
-      <header className={`app-header header-role-${userRole}`}>
+      <header className="app-header">
         <div className="header-user-info">
-          <div className="header-logo-badge">
-            <img src="/nooria-logo.svg" alt="NOORIA ACADEMY Logo" />
+          <div className="header-brand-badge">
+            <img src="/nooria-logo.svg" alt="Vidyalaya Logo" onError={(e) => { e.target.style.display='none'; }} />
+            <span style={{ fontSize: '16px' }}>🏫</span>
           </div>
-          <div className="header-text-titles">
-            <div className="header-title-role-row">
-              <h2>NOORIA ACADEMY</h2>
-              <span className={`header-role-badge ${roleInfo.badgeClass}`}>{roleInfo.label}</span>
+          <div className="header-titles-col">
+            <div className="header-app-name">
+              <span>VIDYALAYA</span>
+              <span className={`header-role-dot ${roleInfo.dotClass}`} title={`Active Role: ${roleInfo.label}`}></span>
             </div>
-            <p>Welcome, <span>{getUserName()}</span></p>
+            <p className="header-user-greeting">
+              Namaste, <span>{getUserName()}</span>
+            </p>
           </div>
         </div>
 
-        <button 
-          className="notification-bell-btn"
-          onClick={() => onOpenModal(userRole === 'admin' ? 'admin_broadcast' : 'notice')}
-          title="Notifications & Notices"
-        >
-          <Bell size={20} />
-          {notificationCount > 0 && (
-            <span className="notification-badge-dot">{notificationCount}</span>
-          )}
-        </button>
+        <div className="header-actions">
+          <button 
+            className="header-icon-btn"
+            onClick={() => onOpenModal(userRole === 'admin' ? 'admin_broadcast' : 'notice')}
+            title="School Notices & Alerts"
+          >
+            <Bell size={18} />
+            {notificationCount > 0 && (
+              <span className="header-badge-count">{notificationCount}</span>
+            )}
+          </button>
+        </div>
       </header>
     );
   }
 
   const getHeaderTitle = () => {
     switch (currentTab) {
-      case 'attendance': return userRole === 'teacher' ? 'CLASS ATTENDANCE' : 'ATTENDANCE REPORT';
-      case 'homework': return userRole === 'teacher' ? 'ASSIGN HOMEWORK' : 'Home Work';
-      case 'staff': return 'FACULTY & STAFF';
-      case 'fees': return 'FEE MANAGEMENT';
+      case 'attendance': return userRole === 'teacher' ? 'Class Attendance Register' : 'Attendance Register';
+      case 'homework': return userRole === 'teacher' ? 'Assign Homework' : 'Homework & Tasks';
       case 'profile': return 'User Profile';
-      default: return 'NOORIA ACADEMY';
+      default: return 'Vidyalaya Portal';
     }
   };
 
-  const isTealHeader = currentTab === 'profile';
-
   return (
-    <header className={`screen-nav-header ${isTealHeader ? 'teal-theme' : ''} header-nav-${userRole}`}>
+    <header className="screen-nav-header">
       <button 
         className="back-btn" 
         onClick={() => onNavigate('home')}
-        title="Go to Home"
+        title="Return to Home"
       >
-        <ChevronLeft size={24} />
+        <ChevronLeft size={20} />
       </button>
-      <div className="screen-nav-title">{getHeaderTitle()}</div>
+      <h2 className="screen-title">{getHeaderTitle()}</h2>
+      <div style={{ width: '34px' }}></div> {/* Spacer balance */}
     </header>
   );
 };
-
