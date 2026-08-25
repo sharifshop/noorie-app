@@ -22,17 +22,17 @@ export const Header = ({ currentTab, userRole = 'student', onNavigate, onOpenMod
       <header className="app-header">
         <div className="header-user-info">
           <div className="header-brand-badge">
-            <img src="/nooria-logo.svg" alt="Vidyalaya Logo" onError={(e) => { e.target.style.display='none'; }} />
-            <span style={{ fontSize: '16px' }}>🏫</span>
+            <img src="/noria-logo.png" alt="Noria Logo" onError={(e) => { e.target.style.display='none'; }} />
+            {/* <span style={{ fontSize: '16px' }}>🏫</span> */}
           </div>
           <div className="header-titles-col">
             <div className="header-app-name">
-              <span>VIDYALAYA</span>
+              <span>Nooria Academy</span>
               <span className={`header-role-dot ${roleInfo.dotClass}`} title={`Active Role: ${roleInfo.label}`}></span>
             </div>
-            <p className="header-user-greeting">
+            {/* <p className="header-user-greeting">
               Namaste, <span>{getUserName()}</span>
-            </p>
+            </p> */}
           </div>
         </div>
 
